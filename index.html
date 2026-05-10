@@ -46,13 +46,66 @@
         </p>
         <div class="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
             <button onclick="filter('all')" class="filter-btn active bg-indigo-600 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all">全部作品</button>
-            <button onclick="filter('台灣')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold">🇹🇼 台灣精選</button>
-            <button onclick="filter('美國')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold">🇺🇸 好萊塢</button>
-            <button onclick="filter('韓國')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold">🇰🇷 韓國趨勢</button>
+            <button onclick="filter('台灣')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all">🇹🇼 台灣精選</button>
+            <button onclick="filter('美國')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all">🇺🇸 好萊塢</button>
+            <button onclick="filter('韓國')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all">🇰🇷 韓國趨勢</button>
+            <button onclick="filter('日本')" class="filter-btn bg-slate-800/50 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all">🇯🇵 日本職人</button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6">
+        
+        <!-- Trending Professionals Section -->
+        <div class="mb-16">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h3 class="text-2xl font-black mb-1"><i class="fas fa-fire-flame-curved text-orange-500 mr-2"></i>職人焦點 Trending</h3>
+                    <p class="text-slate-400 text-sm">本週備受矚目的幕後推手</p>
+                </div>
+                <button class="text-indigo-400 text-sm font-bold hover:text-indigo-300 transition-colors">查看全部 <i class="fas fa-arrow-right ml-1"></i></button>
+            </div>
+            <div class="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
+                <!-- Professional 1 -->
+                <div class="glass p-6 rounded-[2rem] min-w-[280px] shrink-0 border border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-full object-cover group-hover:scale-110 transition-transform">
+                        <div>
+                            <h4 class="font-bold text-lg">Hoyte van Hoytema</h4>
+                            <p class="text-xs text-indigo-400 uppercase tracking-wider font-black">攝影指導</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-400 line-clamp-2">以《奧本海默》等片聞名，擅長使用 IMAX 巨幕格式捕捉細膩情感與壯闊場面。</p>
+                </div>
+                <!-- Professional 2 -->
+                <div class="glass p-6 rounded-[2rem] min-w-[280px] shrink-0 border border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-full object-cover group-hover:scale-110 transition-transform">
+                        <div>
+                            <h4 class="font-bold text-lg">Ludwig Göransson</h4>
+                            <p class="text-xs text-indigo-400 uppercase tracking-wider font-black">原創音樂</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-400 line-clamp-2">將電子音效與古典樂器完美融合的配樂大師，奧斯卡得主。</p>
+                </div>
+                <!-- Professional 3 -->
+                <div class="glass p-6 rounded-[2rem] min-w-[280px] shrink-0 border border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-full object-cover group-hover:scale-110 transition-transform">
+                        <div>
+                            <h4 class="font-bold text-lg">朴智恩</h4>
+                            <p class="text-xs text-indigo-400 uppercase tracking-wider font-black">編劇</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-400 line-clamp-2">創造《淚之女王》、《愛的迫降》等現象級神劇的王牌編劇。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+            <h3 class="text-2xl font-black">精選作品庫</h3>
+            <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30">共收錄 100+ 筆資料</span>
+        </div>
+
         <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
         <div id="loadMoreSection" class="mt-24 text-center">
             <button id="loadMoreBtn" onclick="loadMore()" class="bg-white text-black px-12 py-4 rounded-2xl text-sm font-black hover:scale-105 transition-all">
@@ -198,6 +251,60 @@
                     { q: "為什麼白賢祐要每天去樓頂吃泡麵？", a: "象徵他在豪門壓抑生活中的唯一自由出口與放鬆時刻。" }
                 ],
                 rating: 9.1
+            },
+            {
+                id: "jp_2021_01", title: "在車上 (Drive My Car)", country: "日本", year: "2021", type: "Movie", genre: "劇情/文藝",
+                poster: "https://images.unsplash.com/photo-1494548162494-384bba4ab999?q=80&w=800",
+                desc: "濱口竜介執導，改編自村上春樹短篇小說。透過長達三小時的篇幅，細膩描繪喪妻的舞台劇導演與代駕司機之間，在紅色 Saab 900 上的對話與心靈療癒。",
+                awards: "第 94 屆奧斯卡最佳國際影片，坎城影展最佳劇本。",
+                staff: {
+                    "導演/編劇": "濱口竜介 (擅長長鏡頭與細膩的台詞節奏)",
+                    "攝影指導": "四宮秀俊 (以冷冽卻溫柔的色調捕捉車內空間)",
+                    "原創音樂": "石橋英子 (空靈且極簡的配樂)",
+                    "編劇": "大江崇允"
+                },
+                cast: ["西島秀俊 (家福悠介)", "三浦透子 (渡利美咲)", "岡田將生 (高槻耕史)"],
+                streaming: [{ name: "CatchPlay+", url: "#", color: "bg-slate-800" }],
+                qa: [
+                    { q: "為什麼選擇紅色的 Saab 900 作為主要場景？", a: "紅色在畫面中非常搶眼，能將角色的封閉空間（車內）與外界的廣闊景色（如雪地）形成強烈對比。" }
+                ],
+                rating: 9.2
+            },
+            {
+                id: "jp_2023_01", title: "哥吉拉-1.0", country: "日本", year: "2023", type: "Movie", genre: "科幻/災難",
+                poster: "https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=800",
+                desc: "哥吉拉誕生 70 周年紀念作。將背景設定在二戰剛結束、百廢待舉的日本（即「零」的狀態），哥吉拉的出現讓一切退至「負一」。",
+                awards: "第 96 屆奧斯卡最佳視覺效果獎。",
+                staff: {
+                    "導演/編劇/VFX": "山崎貴 (兼任視覺特效總監，以極低預算創造奇蹟)",
+                    "攝影指導": "柴崎幸三",
+                    "原創音樂": "佐藤直紀 (結合伊福部昭的經典配樂，打造絕望感)",
+                    "VFX團隊": "白組 (Shirogumi) - 僅約 35 人的特效團隊"
+                },
+                cast: ["神木隆之介 (敷島浩一)", "濱邊美波 (大石典子)"],
+                streaming: [{ name: "Netflix", url: "#", color: "bg-red-600" }],
+                qa: [
+                    { q: "這部電影的特效預算真的很少嗎？", a: "是的，據報預算僅約 1500 萬美元，卻擊敗了眾多好萊塢上億美元大製作，展現了日本 VFX 團隊的高效與匠人精神。" }
+                ],
+                rating: 9.3
+            },
+            {
+                id: "us_2022_01", title: "媽的多重宇宙", country: "美國", year: "2022", type: "Movie", genre: "科幻/動作/喜劇",
+                poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=800",
+                desc: "關家永與丹尼爾·舒奈特執導。一名疲憊的華裔美國洗衣店老闆娘，必須穿梭於多重宇宙中，連結各種版本的自己以拯救世界，並修復母女關係。",
+                awards: "第 95 屆奧斯卡 7 項大獎，包括最佳影片、最佳導演、最佳女主角。",
+                staff: {
+                    "導演/編劇": "Daniel Kwan & Daniel Scheinert (Daniels)",
+                    "攝影指導": "Larkin Seiple (使用不同鏡頭與長寬比區分宇宙)",
+                    "剪輯": "Paul Rogers (極其複雜且節奏緊湊的多重時空剪接)",
+                    "武術指導": "Martial Club (致敬香港功夫片的動作設計)"
+                },
+                cast: ["楊紫瓊 (Evelyn Wang)", "關繼威 (Waymond Wang)", "許瑋倫 (Joy Wang)"],
+                streaming: [{ name: "HBO Go / Max", url: "#", color: "bg-blue-600" }],
+                qa: [
+                    { q: "電影中的視覺特效有幾個人做？", a: "主要由一個僅有 5 人的小團隊，在疫情期間於各自臥室中，主要使用 Adobe After Effects 完成大部份特效。" }
+                ],
+                rating: 9.4
             }
         ];
 
@@ -222,6 +329,16 @@
         let currentFilter = 'all';
         let currentMovie = null;
 
+        function getFavs() { return JSON.parse(localStorage.getItem('cinetrace_favs') || '[]'); }
+        function toggleFav(e, id) {
+            e.stopPropagation();
+            let favs = getFavs();
+            if (favs.includes(id)) { favs = favs.filter(f => f !== id); }
+            else { favs.push(id); }
+            localStorage.setItem('cinetrace_favs', JSON.stringify(favs));
+            renderGrid();
+        }
+
         function renderGrid() {
             const grid = document.getElementById('movieGrid');
             const filtered = currentFilter === 'all' ? database : database.filter(m => m.country === currentFilter);
@@ -235,8 +352,10 @@
 
             const toShow = finalData.slice(0, displayLimit);
             grid.innerHTML = '';
+            const favs = getFavs();
             
             toShow.forEach((m, i) => {
+                const isFav = favs.includes(m.id);
                 const card = document.createElement('div');
                 card.className = "movie-card glass rounded-[2.5rem] overflow-hidden cursor-pointer group";
                 card.style.animationDelay = `${(i % 8) * 0.1}s`;
@@ -244,7 +363,10 @@
                 card.innerHTML = `
                     <div class="relative aspect-[3/4.5] overflow-hidden">
                         <img src="${m.poster}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${m.title}">
-                        <div class="absolute top-4 right-4 bg-indigo-600 px-3 py-1 rounded-full text-[10px] font-black shadow-xl">★ ${m.rating}</div>
+                        <div class="absolute top-4 right-4 bg-indigo-600 px-3 py-1 rounded-full text-[10px] font-black shadow-xl z-10">★ ${m.rating}</div>
+                        <button onclick="toggleFav(event, '${m.id}')" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center transition-colors z-10 hover:bg-black/80 ${isFav ? 'text-pink-500' : 'text-white/40'}">
+                            <i class="fas fa-heart"></i>
+                        </button>
                         <div class="absolute inset-0 poster-overlay p-8 flex flex-col justify-end">
                             <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">${m.country} · ${m.year}</span>
                             <h3 class="text-xl font-bold group-hover:text-indigo-300 transition-colors leading-tight">${m.title}</h3>
@@ -356,5 +478,50 @@
         function closeModal() { document.getElementById('modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
         window.onload = renderGrid;
     </script>
+
+    <!-- Footer -->
+    <footer class="mt-32 border-t border-white/10 bg-black/50 pt-16 pb-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/10 to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-microscope text-white text-sm"></i>
+                    </div>
+                    <h2 class="text-xl font-black tracking-tighter">CineTrace<span class="text-indigo-500">.</span></h2>
+                </div>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6 max-w-md">
+                    國際影視職人百科。致力於解析鏡頭背後的專業工藝，從攝影、美術、配樂到編導，我們為熱愛電影與影集的你，提供最深度的幕後視野。
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold mb-6 text-white tracking-widest uppercase text-sm">快速連結</h4>
+                <ul class="space-y-4 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-indigo-400 transition-colors">關於我們</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition-colors">聯絡團隊</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition-colors">內容政策</a></li>
+                    <li><a href="#" class="hover:text-indigo-400 transition-colors">隱私權聲明</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6 text-white tracking-widest uppercase text-sm">訂閱深度解析電子報</h4>
+                <p class="text-slate-500 text-xs mb-4">每週獲取最新的幕後解析文章與職人專訪。</p>
+                <form class="flex gap-2">
+                    <input type="email" placeholder="您的 Email..." class="flex-1 bg-slate-900/80 border border-slate-700/50 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-500 transition-colors">訂閱</button>
+                </form>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/5 text-center text-slate-500 text-xs">
+            &copy; 2026 CineTrace. All rights reserved.
+        </div>
+    </footer>
 </body>
 </html>
