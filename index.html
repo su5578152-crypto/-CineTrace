@@ -76,8 +76,9 @@
             <div class="glass p-2 md:p-4 rounded-[2rem] border border-white/5 shadow-2xl">
                 <div class="relative w-full aspect-video rounded-2xl overflow-hidden">
                     <iframe 
+                        id="youtube-player"
                         class="absolute top-0 left-0 w-full h-full"
-                        src="https://www.youtube.com/embed/_EC2Isjtk3U?si=bgYQj65ZPJON47kt" 
+                        src="https://www.youtube.com/embed/_EC2Isjtk3U?si=bgYQj65ZPJON47kt&enablejsapi=1" 
                         title="YouTube video player" 
                         frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -480,7 +481,28 @@
 
         function closeModal() { document.getElementById('modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
         window.onload = renderGrid;
+
+        // YouTube IFrame API for GA4 Event Tracking
+        let isVideoTracked = false;
+        function onYouTubeIframeAPIReady() {
+            new YT.Player('youtube-player', {
+                events: {
+                    'onStateChange': function(event) {
+                        if (event.data == YT.PlayerState.PLAYING && !isVideoTracked) {
+                            if(typeof gtag === 'function') {
+                                gtag('event', 'video_interest', {
+                                    'event_category': 'video_engagement',
+                                    'event_label': '對這個影片有興趣的使用者'
+                                });
+                            }
+                            isVideoTracked = true;
+                        }
+                    }
+                }
+            });
+        }
     </script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <!-- Footer -->
     <footer class="mt-32 border-t border-white/10 bg-black/50 pt-16 pb-8 relative overflow-hidden">
