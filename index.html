@@ -118,7 +118,7 @@
         <div class="absolute inset-0 bg-black/98 backdrop-blur-2xl" onclick="closeModal()"></div>
         <div class="absolute inset-2 md:inset-10 lg:inset-20 bg-[#0a0f1d] rounded-[3rem] border border-white/10 overflow-hidden flex flex-col md:flex-row">
             <div class="w-full md:w-[450px] relative h-80 md:h-full shrink-0">
-                <img id="m-poster" class="w-full h-full object-cover" src="" alt="Poster">
+                <img id="m-poster" class="w-full h-full object-contain bg-[#020617]" src="" alt="Poster" loading="lazy">
                 <div class="absolute inset-0 poster-overlay flex flex-col justify-end p-10">
                     <div id="m-rating" class="mb-4"></div>
                     <div id="m-streaming" class="flex flex-col gap-3"></div>
@@ -147,164 +147,134 @@
         const database = [
             {
                 id: "tw_2024_01", title: "不夠善良的我們", country: "台灣", year: "2024", type: "Series", genre: "都會/心理/劇情",
-                poster: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800",
-                desc: "徐譽庭編導作品。講述兩個同月同日生的女性，在追逐同一個男人、同一份工作與同一種理想生活的過程中，糾纏十二年的「善良與不善良」之辯。",
-                awards: "2024 第 59 屆金鐘獎入圍 13 項（包含最佳女主角、最佳編導、原創歌曲獎）。",
+                poster: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800&h=1200&fit=crop",
+                desc: "金鐘編劇徐譽庭再度自編自導的深刻力作。故事以兩位同月同日生、品味相似的女性為雙主角。她們在年輕時愛上同一個男人，十二年來透過社群媒體互相窺探，在假想敵的陰影下，展現了現代女性在婚姻、事業、婆媳關係與自我認同中的掙扎。劇本不帶批判地剖析了人性中微妙的「善良與不善良」，寫實的對白直戳人心。",
+                awards: "2024 第 59 屆金鐘獎入圍 13 項大獎，榮獲最佳女主角、最佳編導等殊榮。",
                 staff: {
-                    "編劇/導演": "徐譽庭 (作品:《我可能不會愛你》)",
+                    "編劇/導演": "徐譽庭 (以《我可能不會愛你》、《誰先愛上他的》聞名，擅長細膩的都會情感描寫)",
                     "製作人": "詹子誼、詹怡宜",
-                    "攝影指導": "詹嘉文 (細膩的光影對比展現人物內心掙扎)",
-                    "原創音樂": "蔡健雅 (特別打造《善良的我們》等 10 首專屬配樂)",
-                    "剪輯指導": "林姿嫺",
-                    "美術設計": "曹源峰 (打造 Rebecca 與 簡慶芬 對比鮮明的居家空間)"
+                    "攝影指導": "詹嘉文 (運用大量鏡面反射與冷暖色溫對比，隱喻角色的內心世界)",
+                    "原創音樂": "蔡健雅 (耗時兩年量身打造全劇配樂與神曲《善良的我們》)",
+                    "剪輯指導": "林姿嫺 (在過去與現在的時空交錯中，保持流暢的情感堆疊)",
+                    "美術設計": "曹源峰 (透過居家空間設計，精準呈現兩位女主角截然不同的性格與經濟狀態)"
                 },
-                cast: ["林依晨 (簡慶芬)", "許瑋甯 (Rebecca)", "賀軍翔 (何瑞之)", "柯震東 (于向立)"],
+                cast: ["林依晨 (飾 簡慶芬)", "許瑋甯 (飾 Rebecca)", "賀軍翔 (飾 何瑞之)", "柯震東 (飾 于向立)"],
                 streaming: [
-                    { name: "MyVideo 獨家上架", url: "https://www.myvideo.net.tw", color: "bg-orange-600" },
+                    { name: "MyVideo", url: "#", color: "bg-orange-600" },
                     { name: "愛奇藝國際版", url: "#", color: "bg-green-600" }
                 ],
                 qa: [
-                    { q: "為什麼 Rebecca 始終感覺不到被愛？", a: "劇本深度刻畫了 Rebecca 由於成長背景導致的「匱乏感」，即便外人看來她很優秀，她內心的空洞仍難以填補。" },
-                    { q: "結局的含義是什麼？", a: "徐譽庭導演表示，結局在於「和解」。簡慶芬與 Rebecca 最終不是敵對，而是透過彼此看見了自己的影子。" }
+                    { q: "為什麼 Rebecca 始終感覺不到被愛？", a: "劇本深度刻畫了 Rebecca 由於家庭破裂與哥哥的拖累，導致內心深處的「匱乏感」與不安全感。即使她事業有成、外表光鮮，她仍覺得自己「不配」擁有純粹的愛。" },
+                    { q: "徐譽庭導演想透過結局傳達什麼？", a: "結局的重點在於「和解」與「放下」。兩位女主角最終明白，她們嫉妒的其實是對方身上自己缺乏的特質，最終在彼此的眼淚中找到了對抗世界與原諒自己的力量。" }
                 ],
                 rating: 9.4
             },
             {
-                id: "tw_2023_01", title: "模仿犯", country: "台灣", year: "2023", type: "Series", genre: "犯罪/驚悚/推理",
-                poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=800",
-                desc: "改編自宮部美幸小說。描述 90 年代台灣，一名媒體操弄者如何利用電視新聞轉播進行連環殺戮，挑戰法律與正義的底線。",
-                awards: "第 58 屆金鐘獎 17 項入圍，獲「最佳戲劇節目」等 4 項大獎。",
+                id: "kr_2022_01", title: "黑暗榮耀", country: "韓國", year: "2022", type: "Series", genre: "復仇/驚悚/社會",
+                poster: "https://images.unsplash.com/photo-1508609594580-c11f67f22312?q=80&w=800&h=1200&fit=crop",
+                desc: "由韓國王牌編劇金銀淑執筆的復仇神劇。講述女主角文同珢在高中時期遭受極端殘忍的校園霸凌，被迫退學並毀了建築師夢想。經過近二十年的縝密籌備，她隱忍地步步為營，化身為復仇的執刑者，將當年參與霸凌的加害者一一拖入地獄。本劇不僅是爽快的復仇劇，更深刻探討了階級複製、校園暴力與旁觀者之惡。",
+                awards: "第 59 屆百想藝術大賞榮獲電視部門大賞、最佳女主角、最佳女配角。",
                 staff: {
-                    "導演": "張榮吉、洪子烜",
-                    "攝影": "陳大璞 (重現 90 年代台北的潮濕與壓抑感)",
-                    "美術指導": "蕭仁倫 (耗時數月打造 T0B 電視台全景)",
-                    "造型指導": "解乙晴 (考究 90 年代主播與檢察官穿著)",
-                    "配樂": "盧律銘 (冷峻低沉的電子樂塑造驚悚氛圍)"
+                    "編劇": "金銀淑 (跳脫以往《鬼怪》的浪漫喜劇，首次挑戰黑暗復仇題材)",
+                    "導演": "安吉鎬 (以冷靜克制的鏡頭語言，呈現極具張力的驚悚氛圍)",
+                    "攝影指導": "使用低色溫與強烈對比的光影，營造出壓抑且令人窒息的視覺語彙",
+                    "原創音樂": "金俊錫 (融合低音提琴與電子合成器，打造出令人毛骨悚然的配樂)"
                 },
-                cast: ["吳慷仁 (郭曉其檢察官)", "柯佳嬿 (胡允慧)", "林心如 (姚雅慈)", "w宗華 (林尚勇)"],
-                streaming: [{ name: "Netflix 全球獨家", url: "https://www.netflix.com", color: "bg-red-600" }],
+                cast: ["宋慧喬 (飾 文同珢)", "李到晛 (飾 朱如炡)", "林智妍 (飾 朴涎鎮)"],
+                streaming: [{ name: "Netflix 獨家", url: "#", color: "bg-red-600" }],
                 qa: [
-                    { q: "劇中的電視台是真實存在的嗎？", a: "是參考了 90 年代台灣多家新聞台的樣貌，美術團隊在攝影棚從零開始搭建而成。" },
-                    { q: "郭曉其這個角色在原著中存在嗎？", a: "原著中並沒有一位貫穿全劇的檢察官，這是劇本為了串連故事線而進行的大幅改編。" }
+                    { q: "劇中電捲棒燙人的情節是真實發生的嗎？", a: "令人心碎的是，這改編自 2006 年韓國清州發生的真實校園暴力案件，當時加害者確實使用了電捲棒與別針施暴。" },
+                    { q: "圍棋在劇中有什麼象徵意義？", a: "圍棋象徵著文同珢的復仇策略：「在沈默中展露慾望，在沈默中誘惑、被誘惑，扒光對方的外殼」。她一步步佔領對方的領地，最終將其圍剿。" }
                 ],
-                rating: 8.9
+                rating: 9.7
             },
             {
-                id: "us_2024_01", title: "幕府將軍", country: "美國", year: "2024", type: "Series", genre: "史詩/戰爭/政治",
-                poster: "https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=800",
-                desc: "2024 艾美獎史上單屆獲獎最多作品。描述 1600 年日本關原之戰前夕，一位英國航海士捲入關東領主吉井虎永的權力遊戲。",
-                awards: "橫掃 2024 第 76 屆艾美獎 18 項大獎（包含最佳影集、最佳男、女主角）。",
+                id: "tw_2019_01", title: "想見你", country: "台灣", year: "2019", type: "Series", genre: "懸疑/愛情/穿越",
+                poster: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=800&h=1200&fit=crop",
+                desc: "風靡全亞洲的神級穿越推理劇。失去男友王詮勝的黃雨萱，意外收到一台隨身聽與伍佰的《Last Dance》卡帶。當她在公車上戴上耳機，竟靈魂穿越回 1998 年，變成了一個長得和自己一模一樣的女高中生陳韻如，並遇到了和已故男友長得一樣的李子維。在錯綜複雜的莫比烏斯環時空中，他們試圖改變彼此死亡的命運。",
+                awards: "第 55 屆金鐘獎 4 項大獎，包含最佳戲劇節目、最佳編劇與最佳女主角。",
                 staff: {
-                    "主創/編劇": "Justin Marks & Rachel Kondo",
-                    "執行製作/主演": "真田廣之 (嚴格監督所有日本文化細節)",
-                    "攝影指導": "Christopher Ross (使用特殊鏡頭模擬 17 世紀繪畫感)",
-                    "服裝設計": "Carlos Rosario (純手工打造數百套戰國鎧甲與和服)",
-                    "語言顧問": "專業團隊 (將英文腳本翻譯為古日語並由專家校閱)"
+                    "編劇": "簡奇峯、林欣慧 (耗時三年構思出無懈可擊的莫比烏斯環時間軸)",
+                    "導演": "黃天仁 (巧妙處理不同時空與角色靈魂轉換的細微差異)",
+                    "配樂": "滾石唱片 (伍佰《Last Dance》成為貫穿全劇的靈魂歌曲)",
+                    "剪輯": "以極高難度的蒙太奇手法，讓觀眾在多重時空中保持清晰的懸疑感"
                 },
-                cast: ["真田廣之 (吉井虎永)", "Cosmo Jarvis (按針)", "澤井杏奈 (鞠子夫人)"],
-                streaming: [{ name: "Disney+ 獨家熱映", url: "#", color: "bg-blue-900" }],
+                cast: ["柯佳嬿 (飾 黃雨萱/陳韻如)", "許光漢 (飾 李子維/王詮勝)", "施柏宇 (飾 莫俊傑)"],
+                streaming: [{ name: "Disney+", url: "#", color: "bg-blue-900" }, { name: "Netflix", url: "#", color: "bg-red-600" }],
                 qa: [
-                    { q: "為什麼這部戲在國外評價極高？", a: "因為它徹底擺脫了西方視角看東方的「刻板印象」，在細節還原上達到了歷史劇的新巔峰。" },
-                    { q: "鞠子夫人的原型是誰？", a: "原型是著名的細川伽羅奢，是日本戰國時代最有名的切支丹（基督教）女性。" }
+                    { q: "時空穿越的邏輯到底是什麼？", a: "這是一個標準的「莫比烏斯環」，沒有起點也沒有終點。黃雨萱的穿越導致了李子維的愛，而李子維的愛又促成了黃雨萱未來的穿越，兩者互為因果。" }
                 ],
                 rating: 9.6
             },
             {
-                id: "us_2023_01", title: "奧本海默", country: "美國", year: "2023", type: "Movie", genre: "傳記/歷史/核彈",
-                poster: "https://images.unsplash.com/photo-1461360228754-6e81c478bc88?q=80&w=800",
-                desc: "克里斯多福·諾蘭作品。回顧原子彈之父羅伯特·奧本海默在曼哈頓計畫期間的心路歷程，以及戰後遭受的政治迫害。",
-                awards: "第 96 屆奧斯卡獲 7 項大獎，包含最佳影片、最佳導演、最佳男主角。",
+                id: "kr_2015_01", title: "請回答1988", country: "韓國", year: "2015", type: "Series", genre: "青春/家庭/懷舊",
+                poster: "https://images.unsplash.com/photo-1541363111435-5c1bf3d59e35?q=80&w=800&h=1200&fit=crop",
+                desc: "韓國電視史上難以超越的溫情經典。故事背景設定在 1988 年的首爾市道峰區雙門洞，聚焦在五個家庭之間的情感與五個青梅竹馬的成長故事。劇中沒有絕對的反派，只有平凡生活中的酸甜苦辣。從父母輩的艱辛與溫暖，到年輕一代的初戀與迷茫，每一集都如同一部細膩的電影，觸動著觀眾最柔軟的淚腺。",
+                awards: "第 52 屆百想藝術大賞最佳導演、最佳男新人。",
                 staff: {
-                    "導演/編劇": "Christopher Nolan (堅持全片實拍、無 CGI 核爆效果)",
-                    "攝影指導": "Hoyte van Hoytema (開發全球首款 IMAX 黑白底片)",
-                    "原創音樂": "Ludwig Göransson (以小提琴模擬原子粒子震動聲響)",
-                    "物理顧問": "Kip Thorne (諾貝爾獎得主，確保科學邏輯嚴密)",
-                    "剪輯": "Jennifer Lame (多層次時空交錯剪輯)"
+                    "編劇": "李祐汀 (以極度細膩的生活觀察，寫出無數催淚且真實的家庭日常對白)",
+                    "導演": "申元浩 (標誌性的羊叫聲效與對 80 年代韓國社會細節的極致考究)",
+                    "美術指導": "真實還原了 1988 年的韓國街景、家電、流行服飾與零食包裝",
+                    "配樂": "大量使用 80 年代韓國流行金曲，完美烘托時代氛圍"
                 },
-                cast: ["Cillian Murphy (奧本海默)", "Robert Downey Jr. (路易斯)", "Emily Blunt (凱蒂)"],
-                streaming: [
-                    { name: "HBO Go / Max", url: "#", color: "bg-blue-600" },
-                    { name: "Apple TV 租借/購買", url: "#", color: "bg-slate-800" }
-                ],
-                qa: [
-                    { q: "三位一體實驗的火光是怎麼拍出來的？", a: "使用汽油、鎂、鋁粉等多種燃料混合引爆，並以特寫鏡頭拍攝，避免使用電腦動畫。" },
-                    { q: "為什麼有些畫面是黑白的？", a: "彩色畫面代表奧本海默的「主觀視角」，黑白畫面代表路易斯史特勞斯的「客觀/外部視角」。" }
-                ],
-                rating: 9.5
-            },
-            {
-                id: "kr_2024_01", title: "淚之女王", country: "韓國", year: "2024", type: "Series", genre: "浪漫/喜劇/豪門",
-                poster: "https://images.unsplash.com/photo-1513106580661-8d419bb63811?q=80&w=800",
-                desc: "刷新 tvN 史上記錄。講述財閥三代女強人與農村出身的入贅律師丈夫，在婚後三年經歷危機並重燃愛火的故事。",
-                awards: "獲 2024 全球 Netflix 非英語影集收視周冠軍多週。",
-                staff: {
-                    "編劇": "朴智恩 (作品:《來自星星的你》、《愛的迫降》)",
-                    "導演": "張榮佑、金熙元 (擅長唯美畫面與強烈運鏡對比)",
-                    "美術指導": "打造極盡奢華的 Queens 集團辦公室與居所",
-                    "服裝設計": "金智媛劇中數百萬價值的高級訂製服考究",
-                    "配樂": "南惠勝 (動人的鋼琴主題曲《The Reason of My Smiles》)"
-                },
-                cast: ["金秀賢 (白賢祐)", "金智媛 (洪海仁)", "朴成焄 (尹殷盛)"],
-                streaming: [{ name: "Netflix 獨家全集", url: "#", color: "bg-red-600" }],
-                qa: [
-                    { q: "劇中提到的罕見疾病「雲狀細胞瘤」是真的嗎？", a: "這是一種為了戲劇效果而虛構的病名，並非真實存在的醫學名詞。" },
-                    { q: "為什麼白賢祐要每天去樓頂吃泡麵？", a: "象徵他在豪門壓抑生活中的唯一自由出口與放鬆時刻。" }
-                ],
-                rating: 9.1
-            },
-            {
-                id: "jp_2021_01", title: "在車上 (Drive My Car)", country: "日本", year: "2021", type: "Movie", genre: "劇情/文藝",
-                poster: "https://images.unsplash.com/photo-1494548162494-384bba4ab999?q=80&w=800",
-                desc: "濱口竜介執導，改編自村上春樹短篇小說。透過長達三小時的篇幅，細膩描繪喪妻的舞台劇導演與代駕司機之間，在紅色 Saab 900 上的對話與心靈療癒。",
-                awards: "第 94 屆奧斯卡最佳國際影片，坎城影展最佳劇本。",
-                staff: {
-                    "導演/編劇": "濱口竜介 (擅長長鏡頭與細膩的台詞節奏)",
-                    "攝影指導": "四宮秀俊 (以冷冽卻溫柔的色調捕捉車內空間)",
-                    "原創音樂": "石橋英子 (空靈且極簡的配樂)",
-                    "編劇": "大江崇允"
-                },
-                cast: ["西島秀俊 (家福悠介)", "三浦透子 (渡利美咲)", "岡田將生 (高槻耕史)"],
-                streaming: [{ name: "CatchPlay+", url: "#", color: "bg-slate-800" }],
-                qa: [
-                    { q: "為什麼選擇紅色的 Saab 900 作為主要場景？", a: "紅色在畫面中非常搶眼，能將角色的封閉空間（車內）與外界的廣闊景色（如雪地）形成強烈對比。" }
-                ],
-                rating: 9.2
-            },
-            {
-                id: "jp_2023_01", title: "哥吉拉-1.0", country: "日本", year: "2023", type: "Movie", genre: "科幻/災難",
-                poster: "https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=800",
-                desc: "哥吉拉誕生 70 周年紀念作。將背景設定在二戰剛結束、百廢待舉的日本（即「零」的狀態），哥吉拉的出現讓一切退至「負一」。",
-                awards: "第 96 屆奧斯卡最佳視覺效果獎。",
-                staff: {
-                    "導演/編劇/VFX": "山崎貴 (兼任視覺特效總監，以極低預算創造奇蹟)",
-                    "攝影指導": "柴崎幸三",
-                    "原創音樂": "佐藤直紀 (結合伊福部昭的經典配樂，打造絕望感)",
-                    "VFX團隊": "白組 (Shirogumi) - 僅約 35 人的特效團隊"
-                },
-                cast: ["神木隆之介 (敷島浩一)", "濱邊美波 (大石典子)"],
+                cast: ["李惠利 (飾 成德善)", "朴寶劍 (飾 崔澤)", "柳俊烈 (飾 金正煥)", "高庚杓 (飾 成善宇)"],
                 streaming: [{ name: "Netflix", url: "#", color: "bg-red-600" }],
                 qa: [
-                    { q: "這部電影的特效預算真的很少嗎？", a: "是的，據報預算僅約 1500 萬美元，卻擊敗了眾多好萊塢上億美元大製作，展現了日本 VFX 團隊的高效與匠人精神。" }
+                    { q: "為什麼這部劇能引起如此巨大的共鳴？", a: "因為它不僅是猜老公的青春愛情劇，更是一部深刻的「家庭劇」。它描繪了那種現代社會已經逐漸消失的鄰里人情味，以及父母對子女無私的愛。" }
+                ],
+                rating: 9.8
+            },
+            {
+                id: "us_2008_01", title: "絕命毒師 (Breaking Bad)", country: "美國", year: "2008", type: "Series", genre: "犯罪/劇情/驚悚",
+                poster: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=800&h=1200&fit=crop",
+                desc: "被譽為電視史上最偉大的影集之一。講述一位平凡且懷才不遇的高中化學老師 Walter White，在被診斷出罹患末期肺癌後，為了在死前給家人留下足夠的財產，決定利用自己的化學天賦，與曾經的學生 Jesse Pinkman 聯手製造並販賣高純度冰毒。劇情深刻描繪了一個好人如何因為驕傲與貪婪，一步步墮落為冷血無情的毒梟大毒師。",
+                awards: "榮獲 16 座艾美獎，並以「史上最高評分影集」列入金氏世界紀錄。",
+                staff: {
+                    "創作者/主編劇": "Vince Gilligan (以完美的伏筆回收與嚴謹的角色發展曲線聞名)",
+                    "攝影指導": "Michael Slovis (運用標誌性的黃色濾鏡呈現新墨西哥州的炎熱與法外之地的氛圍)",
+                    "化學顧問": "Dr. Donna Nelson (確保劇中化學反應與專有名詞的科學準確性)"
+                },
+                cast: ["Bryan Cranston (飾 Walter White)", "Aaron Paul (飾 Jesse Pinkman)"],
+                streaming: [{ name: "Netflix 全集", url: "#", color: "bg-red-600" }],
+                qa: [
+                    { q: "Walter White 真的只是為了家人嗎？", a: "在劇集終季，他終於向妻子承認：『我這麼做是為了我自己。我喜歡這樣，我做得很好，這讓我感覺自己活著。』這是全劇最核心的悲劇與覺醒。" }
+                ],
+                rating: 9.9
+            },
+            {
+                id: "us_2016_01", title: "怪奇物語 (Stranger Things)", country: "美國", year: "2016", type: "Series", genre: "科幻/恐怖/青春",
+                poster: "https://images.unsplash.com/photo-1627404399723-882dfba81e18?q=80&w=800&h=1200&fit=crop",
+                desc: "向 80 年代流行文化致敬的科幻史詩巨作。故事發生在 1983 年印第安納州的霍金斯小鎮，一名小男孩 Will 離奇失蹤。他的朋友、家人與當地的警長在尋找他的過程中，意外發現了政府的秘密實驗室、一個擁有超能力的小女孩 Eleven，以及一個被稱為「顛倒世界」的駭人平行宇宙。本劇完美融合了史蒂芬金的恐怖感與史蒂芬史匹柏的冒險精神。",
+                awards: "多次入圍艾美獎最佳影集，全球收視率最高的 Netflix 原創影集之一。",
+                staff: {
+                    "創作者/導演": "The Duffer Brothers (巧妙融合 80 年代科幻、恐怖與青春元素)",
+                    "配樂": "Kyle Dixon & Michael Stein (以大量復古合成器打造出標誌性的 80 年代電子音效)",
+                    "視覺特效": "精準還原「顛倒世界」的孢子飄散與怪物 Demogorgon 的恐怖生物設計"
+                },
+                cast: ["Millie Bobby Brown (飾 Eleven)", "Winona Ryder (飾 Joyce Byers)", "David Harbour (飾 Jim Hopper)"],
+                streaming: [{ name: "Netflix 獨家", url: "#", color: "bg-red-600" }],
+                qa: [
+                    { q: "顛倒世界的設定靈感來自哪裡？", a: "靈感來自冷戰時期的陰謀論、蒙托克計畫（Montauk Project）的傳聞，以及《龍與地下城》(D&D) 桌遊中的概念。" }
                 ],
                 rating: 9.3
             },
             {
-                id: "us_2022_01", title: "媽的多重宇宙", country: "美國", year: "2022", type: "Movie", genre: "科幻/動作/喜劇",
-                poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=800",
-                desc: "關家永與丹尼爾·舒奈特執導。一名疲憊的華裔美國洗衣店老闆娘，必須穿梭於多重宇宙中，連結各種版本的自己以拯救世界，並修復母女關係。",
-                awards: "第 95 屆奧斯卡 7 項大獎，包括最佳影片、最佳導演、最佳女主角。",
+                id: "jp_2023_01", title: "哥吉拉-1.0", country: "日本", year: "2023", type: "Movie", genre: "科幻/災難/戰爭",
+                poster: "https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=800&h=1200&fit=crop",
+                desc: "哥吉拉誕生 70 周年紀念作。將背景設定在二戰剛結束、百廢待舉的日本（即「零」的狀態），此時哥吉拉的出現讓一切退至絕望的「負一」。電影不僅展現了震撼的怪獸破壞場面，更深刻描繪了經歷戰爭創傷的退役神風特攻隊員，如何在絕望中尋找活下去的意義與救贖，被譽為近年來文戲最出色的哥吉拉電影。",
+                awards: "第 96 屆奧斯卡最佳視覺效果獎 (日本影史首度獲得此殊榮)。",
                 staff: {
-                    "導演/編劇": "Daniel Kwan & Daniel Scheinert (Daniels)",
-                    "攝影指導": "Larkin Seiple (使用不同鏡頭與長寬比區分宇宙)",
-                    "剪輯": "Paul Rogers (極其複雜且節奏緊湊的多重時空剪接)",
-                    "武術指導": "Martial Club (致敬香港功夫片的動作設計)"
+                    "導演/編劇/VFX": "山崎貴 (兼任視覺特效總監，以極低預算創造好萊塢級奇蹟)",
+                    "攝影指導": "柴崎幸三 (以手持攝影增加臨場感與恐懼感)",
+                    "原創音樂": "佐藤直紀 (結合伊福部昭的經典哥吉拉進行曲，打造極致絕望感)",
+                    "VFX團隊": "白組 (Shirogumi) - 僅約 35 人的特效團隊，締造奧斯卡傳奇"
                 },
-                cast: ["楊紫瓊 (Evelyn Wang)", "關繼威 (Waymond Wang)", "許瑋倫 (Joy Wang)"],
-                streaming: [{ name: "HBO Go / Max", url: "#", color: "bg-blue-600" }],
+                cast: ["神木隆之介 (飾 敷島浩一)", "濱邊美波 (飾 大石典子)"],
+                streaming: [{ name: "Netflix 全球上線", url: "#", color: "bg-red-600" }],
                 qa: [
-                    { q: "電影中的視覺特效有幾個人做？", a: "主要由一個僅有 5 人的小團隊，在疫情期間於各自臥室中，主要使用 Adobe After Effects 完成大部份特效。" }
+                    { q: "這部電影的特效預算真的很少嗎？", a: "是的，據報預算僅約 1500 萬美元（不到好萊塢同級電影的十分之一），卻擊敗了眾多上億美元大製作，展現了日本 VFX 團隊的高效與匠人精神。" }
                 ],
-                rating: 9.4
+                rating: 9.5
             }
         ];
 
@@ -361,8 +331,8 @@
                 card.style.animationDelay = `${(i % 8) * 0.1}s`;
                 card.onclick = () => openModal(m.id);
                 card.innerHTML = `
-                    <div class="relative aspect-[3/4.5] overflow-hidden">
-                        <img src="${m.poster}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${m.title}">
+                    <div class="relative aspect-[3/4.5] overflow-hidden bg-[#020617]">
+                        <img src="${m.poster}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" alt="${m.title}" loading="lazy">
                         <div class="absolute top-4 right-4 bg-indigo-600 px-3 py-1 rounded-full text-[10px] font-black shadow-xl z-10">★ ${m.rating}</div>
                         <button onclick="toggleFav(event, '${m.id}')" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center transition-colors z-10 hover:bg-black/80 ${isFav ? 'text-pink-500' : 'text-white/40'}">
                             <i class="fas fa-heart"></i>
