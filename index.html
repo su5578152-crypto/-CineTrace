@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineTrace | 影跡 - 國際影視職人百科與討論平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #6366f1;
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+        }
+        body { 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: #f1f5f9;
+            scroll-behavior: smooth;
+        }
+        .glass { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+        }
+        .movie-card { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        .movie-card:hover { transform: translateY(-10px) scale(1.03); border-color: rgba(99, 102, 241, 0.5); }
+        .poster-overlay {
+            background: linear-gradient(0deg, rgba(2,6,23,1) 0%, rgba(2,6,23,0.3) 50%, transparent 100%);
+        }
+        .tab-active { color: #818cf8; border-bottom: 3px solid #818cf8; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .loading-shimmer {
+            background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <nav class="fixed top-0 w-full z-[1000] glass px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+                <i class="fas fa-film text-white text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-black tracking-tighter">CineTrace<span class="text-indigo-500">.</span></h1>
+        </div>
+
+        <div class="flex-1 max-w-xl mx-8 relative hidden md:block">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋全球 1000+ 幕後大師、導演、經典作品..." 
+                class="w-full bg-slate-900/80 border border-slate-700/50 rounded-2xl py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all focus:bg-slate-900">
+        </div>
+
+        <div class="flex items-center gap-4">
+            <span class="hidden lg:block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">DB Version 5.2.0</span>
+            <button class="bg-white text-black px-6 py-2 rounded-full text-xs font-black hover:bg-indigo-500 hover:text-white transition-all">登入</button>
+        </div>
+    </nav>
+
+    <header class="pt-40 pb-16 px-8 hero-gradient text-center">
+        <div class="inline-block px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-[10px] font-bold tracking-widest uppercase mb-6 animate-pulse">
+            2024 全球影視大數據已更新
+        </div>
+        <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tight">看見鏡頭外的<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">職人光芒</span></h2>
+        <p class="text-slate-400 max-w-2xl mx-auto text-base md:text-lg font-light mb-10 leading-relaxed">
+            CineTrace 是您的數位影音百科。我們不只記錄劇情，更為每一位參與作品的燈光師、剪輯師、音效師留下印記。
+        </p>
+        
+        <div class="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
+            <button onclick="filter('all')" class="filter-btn active bg-indigo-600 px-6 py-2.5 rounded-2xl text-xs font-bold transition-all shadow-lg shadow-indigo-500/20">全部作品</button>
+            <button onclick="filter('台灣')" class="filter-btn bg-slate-800/50 border border-white/5 px-6 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-700 transition-all">🇹🇼 台劇焦點</button>
+            <button onclick="filter('美國')" class="filter-btn bg-slate-800/50 border border-white/5 px-6 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-700 transition-all">🇺🇸 好萊塢大賞</button>
+            <button onclick="filter('韓國')" class="filter-btn bg-slate-800/50 border border-white/5 px-6 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-700 transition-all">🇰🇷 K-Drama</button>
+            <button onclick="filter('日本')" class="filter-btn bg-slate-800/50 border border-white/5 px-6 py-2.5 rounded-2xl text-xs font-bold hover:bg-slate-700 transition-all">🇯🇵 日系工藝</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6">
+        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- 作品卡片將在此動態生成 -->
+        </div>
+
+        <!-- 真正的載入更多按鈕 -->
+        <div id="loadMoreSection" class="mt-24 text-center">
+            <button id="loadMoreBtn" onclick="loadMore()" class="group relative inline-flex items-center gap-3 bg-white text-black px-12 py-4 rounded-2xl text-sm font-black overflow-hidden hover:scale-105 transition-all">
+                <span class="relative z-10">瀏覽更多全球作品</span>
+                <div class="absolute inset-0 bg-indigo-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                <i class="fas fa-chevron-down group-hover:text-white transition-colors relative z-10"></i>
+            </button>
+            <p id="counter" class="mt-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">目前顯示 0 / 0 作品</p>
+        </div>
+    </main>
+
+    <div id="modal" class="fixed inset-0 z-[2000] hidden">
+        <div class="absolute inset-0 bg-black/98 backdrop-blur-2xl" onclick="closeModal()"></div>
+        <div class="absolute inset-2 md:inset-10 lg:inset-20 bg-[#0a0f1d] rounded-[3rem] border border-white/10 overflow-hidden flex flex-col md:flex-row shadow-2xl">
+            <!-- 左側海報區 -->
+            <div class="w-full md:w-[400px] relative h-80 md:h-full shrink-0">
+                <img id="m-poster" class="w-full h-full object-cover" src="" alt="Poster">
+                <div class="absolute inset-0 poster-overlay flex flex-col justify-end p-10">
+                    <div id="m-rating" class="mb-4"></div>
+                    <div id="m-streaming" class="flex flex-col gap-3"></div>
+                </div>
+            </div>
+            
+            <!-- 右側內容區 -->
+            <div class="flex-1 p-8 md:p-16 overflow-y-auto no-scrollbar">
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <div id="m-tag" class="mb-4"></div>
+                        <h2 id="m-title" class="text-5xl font-black mb-3 tracking-tighter"></h2>
+                        <p id="m-meta" class="text-slate-400 text-sm font-bold tracking-widest uppercase"></p>
+                    </div>
+                    <button onclick="closeModal()" class="w-12 h-12 rounded-full glass flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- 分頁切換 -->
+                <div class="flex gap-10 border-b border-white/5 mb-10 overflow-x-auto no-scrollbar">
+                    <button onclick="switchTab('intro')" id="tab-intro" class="pb-4 text-xs font-black tracking-widest uppercase tab-active whitespace-nowrap">作品解析</button>
+                    <button onclick="switchTab('staff')" id="tab-staff" class="pb-4 text-xs font-black tracking-widest uppercase text-slate-500 whitespace-nowrap">職人百科</button>
+                    <button onclick="switchTab('qa')" id="tab-qa" class="pb-4 text-xs font-black tracking-widest uppercase text-slate-500 whitespace-nowrap">影迷問答</button>
+                </div>
+
+                <div id="m-content" class="space-y-8 animate-fade"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const database = [
+            // --- 台灣精選 (2020-2024) ---
+            {
+                id: "tw_01", title: "正港分局", country: "台灣", year: "2024", type: "Series", genre: "犯罪/喜劇",
+                poster: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=800",
+                desc: "《關於我和鬼變成家人的那件事》衍生劇集。一群兩光警察如何在荒謬的成語殺人案中抓到真兇？",
+                staff: { "導演": "程偉豪、殷振豪", "編劇": "程偉豪", "攝影指導": "陳克勤", "配樂": "盧律銘" },
+                cast: ["許光漢", "王淨", "馬念先", "黃奇斌"],
+                streaming: [{ name: "Netflix 獨家", url: "https://www.netflix.com", color: "bg-red-600" }],
+                qa: [{ q: "這跟電影版有關聯嗎？", a: "是的，這是電影版故事之後的平行時空/後續故事，原班人馬回歸。" }],
+                rating: 8.5
+            },
+            {
+                id: "tw_02", title: "不夠善良的我們", country: "台灣", year: "2024", type: "Series", genre: "都會/劇情",
+                poster: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800",
+                desc: "兩位同月同日生的女性，因為一個男人與對生活的執念，纏繞了十二年的嫉妒與成長。",
+                staff: { "編導": "徐譽庭", "製作人": "詹子誼", "配樂": "蔡健雅", "美術指導": "曹源峰" },
+                cast: ["林依晨", "許瑋甯", "賀軍翔", "柯震東"],
+                streaming: [{ name: "MyVideo", url: "#", color: "bg-orange-500" }, { name: "iQIYI", url: "#", color: "bg-green-600" }],
+                qa: [{ q: "Rebecca 的角色原型是誰？", a: "徐譽庭表示這代表了許多在大城市奮鬥、孤獨卻堅強的單身女性縮影。" }],
+                rating: 9.2
+            },
+            {
+                id: "tw_03", title: "模仿犯", country: "台灣", year: "2023", type: "Series", genre: "懸疑/驚悚",
+                poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=800",
+                desc: "改編自宮部美幸同名小說。描述 90 年代台灣，一名檢察官如何追蹤利用媒體操弄人心的連環殺手。",
+                staff: { "導演": "張榮吉", "攝影": "陳大璞", "造型指導": "解乙晴" },
+                cast: ["吳慷仁", "柯佳嬿", "林心如", "庹宗華"],
+                streaming: [{ name: "Netflix", url: "#", color: "bg-red-600" }],
+                qa: [{ q: "場景是在哪裡拍的？", a: "主要在台北與桃園取景，為了還原 90 年代的電視台，美術組耗資千萬打造場景。" }],
+                rating: 8.8
+            },
+            {
+                id: "tw_04", title: "八尺門的辯護人", country: "台灣", year: "2023", type: "Series", genre: "法律/職人",
+                poster: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=800",
+                desc: "金鐘獎年度最佳戲劇。從一場印尼移工命案，探討死刑、族群與政治鬥爭。",
+                staff: { "編導": "唐福睿", "攝影指導": "詹嘉文", "配樂": "盧律銘" },
+                cast: ["李銘順", "雷嘉汭", "范逸臣"],
+                streaming: [{ name: "Hami Video", url: "#", color: "bg-yellow-500" }, { name: "Netflix", url: "#", color: "bg-red-600" }],
+                qa: [{ q: "李銘順的阿美族語是真練的嗎？", a: "是的，他為了這部戲苦練阿美族語與法律術語多月。" }],
+                rating: 9.5
+            },
+            // --- 美國/好萊塢 (2020-2024) ---
+            {
+                id: "us_01", title: "幕府將軍", country: "美國", year: "2024", type: "Series", genre: "史詩/戰爭",
+                poster: "https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=800",
+                desc: "2024 艾美獎大贏家。再現 1600 年日本戰國時代，外籍航海士捲入權力核心的史詩冒險。",
+                staff: { "主創": "Justin Marks", "攝影指導": "Christopher Ross", "美術指導": "Helen Jarvis" },
+                cast: ["真田廣之", "Cosmo Jarvis", "澤井杏奈"],
+                streaming: [{ name: "Disney+", url: "#", color: "bg-blue-900" }],
+                qa: [{ q: "這部戲是在日本拍的嗎？", a: "不，絕大部分場景是在加拿大溫哥華拍攝，但細節還原度極高。" }],
+                rating: 9.3
+            },
+            {
+                id: "us_02", title: "奧本海默", country: "美國", year: "2023", type: "Movie", genre: "傳記/歷史",
+                poster: "https://images.unsplash.com/photo-1461360228754-6e81c478bc88?q=80&w=800",
+                desc: "克里斯多福·諾蘭作品。講述「原子彈之父」羅伯特·奧本海默複雜的一生與科學倫理掙扎。",
+                staff: { "導演": "Christopher Nolan", "攝影": "Hoyte van Hoytema", "配樂": "Ludwig Göransson" },
+                cast: ["Cillian Murphy", "Robert Downey Jr.", "Emily Blunt"],
+                streaming: [{ name: "Apple TV", url: "#", color: "bg-slate-800" }, { name: "HBO Go", url: "#", color: "bg-blue-600" }],
+                qa: [{ q: "黑白畫面有特別用意嗎？", a: "諾蘭用彩色代表奧本海默的主觀視角，黑白代表斯特勞斯的客觀視角。" }],
+                rating: 9.6
+            },
+            // --- 韓國 (2020-2024) ---
+            {
+                id: "kr_01", title: "淚之女王", country: "韓國", year: "2024", type: "Series", genre: "浪漫/劇情",
+                poster: "https://images.unsplash.com/photo-1513106580661-8d419bb63811?q=80&w=800",
+                desc: "財閥三代與入贅丈夫的奇蹟愛情故事，收視率刷新紀錄的現象級韓劇。",
+                staff: { "編劇": "朴智恩", "導演": "張榮佑、金熙元", "配樂": "南惠勝" },
+                cast: ["金秀賢", "金智媛", "朴成焄"],
+                streaming: [{ name: "Netflix", url: "#", color: "bg-red-600" }],
+                qa: [{ q: "為什麼要在德國取景？", a: "為了展現角色的孤獨感與與世隔絕的浪漫氣氛。" }],
+                rating: 8.9
+            },
+            {
+                id: "kr_02", title: "破墓", country: "韓國", year: "2024", type: "Movie", genre: "驚悚/靈異",
+                poster: "https://images.unsplash.com/photo-1493238792000-8113da705763?q=80&w=800",
+                desc: "2024 韓國影史票房前茅。風水師、葬儀師與巫師聯手解開古老墳墓中的恐怖秘密。",
+                staff: { "導演": "張宰賢", "攝影": "李模凱", "美術": "徐聖景" },
+                cast: ["崔岷植", "金高銀", "李到晛"],
+                streaming: [{ name: "CatchPlay+", url: "#", color: "bg-orange-600" }],
+                qa: [{ q: "狐狸精的傳說是真的嗎？", a: "參考了韓日歷史中的地脈傳說與民間巫術信仰。" }],
+                rating: 9.0
+            }
+            // 更多資料... 此處可無限擴充
+        ];
+
+        // 為了展示 1000+ 效果，我們動態生成一些填充資料
+        const countries = ["台灣", "美國", "韓國", "日本", "法國", "英國"];
+        const genres = ["科幻", "職人", "愛情", "犯罪", "紀錄片"];
+        for(let i=1; i<=120; i++) {
+            database.push({
+                id: `extra_${i}`,
+                title: `全球經典作品 ${i+8}`,
+                country: countries[Math.floor(Math.random()*countries.length)],
+                year: (2020 + Math.floor(Math.random()*5)).toString(),
+                type: Math.random() > 0.5 ? "Series" : "Movie",
+                genre: genres[Math.floor(Math.random()*genres.length)],
+                poster: `https://placehold.co/800x1200/0f172a/6366f1?text=CineTrace+${i+8}`,
+                desc: "這是一部在全球影視圈引起廣泛討論的傑作，從鏡頭語言到敘事結構都展現了當代影視工業的高水準。",
+                staff: { "導演": "國際知名導演", "攝影": "金獎團隊", "配樂": "大師級作曲家" },
+                cast: ["實力派演員 A", "影帝 B", "新人演員 C"],
+                streaming: [{ name: "Netflix", url: "#", color: "bg-red-600" }],
+                qa: [{ q: "這部作品有續集嗎？", a: "目前官方尚未證實，但主創團隊表示不排除開發外傳的可能性。" }],
+                rating: (7 + Math.random()*3).toFixed(1)
+            });
+        }
+
+        let displayLimit = 8;
+        let currentFilter = 'all';
+        let currentMovie = null;
+
+        function renderGrid() {
+            const grid = document.getElementById('movieGrid');
+            const filtered = currentFilter === 'all' ? database : database.filter(m => m.country === currentFilter);
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            
+            const finalData = filtered.filter(m => 
+                m.title.toLowerCase().includes(searchVal) || 
+                m.cast.some(c => c.toLowerCase().includes(searchVal))
+            );
+
+            const toShow = finalData.slice(0, displayLimit);
+            grid.innerHTML = '';
+            
+            toShow.forEach((m, i) => {
+                const card = document.createElement('div');
+                card.className = "movie-card glass rounded-[2.5rem] overflow-hidden cursor-pointer group";
+                card.style.animationDelay = `${(i % 8) * 0.1}s`;
+                card.onclick = () => openModal(m.id);
+                card.innerHTML = `
+                    <div class="relative aspect-[3/4.5] overflow-hidden">
+                        <img src="${m.poster}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${m.title}">
+                        <div class="absolute top-4 right-4 bg-indigo-600/90 px-3 py-1 rounded-full text-[10px] font-black backdrop-blur-md">
+                            ★ ${m.rating}
+                        </div>
+                        <div class="absolute inset-0 poster-overlay p-8 flex flex-col justify-end">
+                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">${m.country} · ${m.year}</span>
+                            <h3 class="text-xl font-bold group-hover:text-indigo-300 transition-colors">${m.title}</h3>
+                            <p class="text-[11px] text-slate-400 mt-1 font-medium">${m.genre}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('counter').innerText = `目前顯示 ${toShow.length} / ${finalData.length} 部作品`;
+            document.getElementById('loadMoreBtn').style.display = toShow.length >= finalData.length ? 'none' : 'inline-flex';
+        }
+
+        function loadMore() {
+            displayLimit += 8;
+            renderGrid();
+        }
+
+        function filter(tag) {
+            currentFilter = tag;
+            displayLimit = 8;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('bg-indigo-600', 'active');
+                b.classList.add('bg-slate-800/50');
+            });
+            event.target.classList.add('bg-indigo-600', 'active');
+            renderGrid();
+        }
+
+        function handleSearch() {
+            displayLimit = 8;
+            renderGrid();
+        }
+
+        function openModal(id) {
+            currentMovie = database.find(m => m.id === id);
+            const m = currentMovie;
+            document.getElementById('m-poster').src = m.poster;
+            document.getElementById('m-title').innerText = m.title;
+            document.getElementById('m-meta').innerText = `${m.year} / ${m.country} / ${m.type} / ${m.genre}`;
+            document.getElementById('m-tag').innerHTML = `<span class="bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-indigo-500/30">Top Rated</span>`;
+            
+            document.getElementById('m-rating').innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-3xl font-black">${m.rating}</span>
+                    <div class="h-2 flex-1 bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-500" style="width: ${m.rating * 10}%"></div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-500 font-bold uppercase">CineScore 指數</p>
+            `;
+
+            document.getElementById('m-streaming').innerHTML = m.streaming.map(s => `
+                <a href="${s.url}" target="_blank" class="${s.color} px-5 py-3 rounded-xl text-xs font-black flex justify-between items-center transition-all hover:scale-105 active:scale-95">
+                    前往 ${s.name} <i class="fas fa-external-link-alt opacity-50"></i>
+                </a>
+            `).join('');
+
+            switchTab('intro');
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('#modal button[id^="tab-"]').forEach(b => b.classList.remove('tab-active', 'text-indigo-400'));
+            document.getElementById(`tab-${tab}`).classList.add('tab-active', 'text-indigo-400');
+            
+            const content = document.getElementById('m-content');
+            const m = currentMovie;
+
+            if (tab === 'intro') {
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <p class="text-slate-300 text-lg leading-relaxed font-light">${m.desc}</p>
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <div class="p-6 glass rounded-3xl">
+                                <span class="text-indigo-400 text-[10px] font-black uppercase mb-2 block">獲獎記錄</span>
+                                <p class="text-sm">入圍多項國際大獎，並獲得 2024 年度最佳作品提名。</p>
+                            </div>
+                            <div class="p-6 glass rounded-3xl">
+                                <span class="text-indigo-400 text-[10px] font-black uppercase mb-2 block">官方評價</span>
+                                <p class="text-sm">影評人一致公認「十年內罕見的視聽饗宴」。</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'staff') {
+                content.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        ${Object.entries(m.staff).map(([role, name]) => `
+                            <div class="group p-6 glass rounded-3xl border border-white/5 hover:border-indigo-500/50 transition-all">
+                                <span class="block text-[10px] text-indigo-400 font-black uppercase mb-1 tracking-widest">${role}</span>
+                                <span class="text-lg font-bold group-hover:text-white transition-colors">${name}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="mt-8">
+                        <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">主演陣容</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${m.cast.map(c => `<span class="bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold border border-white/5">${c}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'qa') {
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        ${m.qa.map(q => `
+                            <div class="p-6 glass rounded-3xl space-y-3">
+                                <div class="flex gap-3 items-start text-indigo-400">
+                                    <span class="bg-indigo-500 text-white w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-black shrink-0">Q</span>
+                                    <span class="font-bold text-base">${q.q}</span>
+                                </div>
+                                <div class="pl-9 text-sm text-slate-400 leading-relaxed">${q.a}</div>
+                            </div>
+                        `).join('')}
+                        <button class="w-full py-4 border-2 border-dashed border-slate-800 rounded-3xl text-slate-500 text-xs font-bold hover:bg-white/5 transition-all">
+                            + 我有關於這部作品的問題
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onload = renderGrid;
+    </script>
+</body>
+</html>
