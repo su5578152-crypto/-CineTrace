@@ -1,0 +1,259 @@
+{
+  "喜劇": [
+    {
+      "title": "何百芮的地獄戀曲",
+      "cast": "郭書瑤、姚淳耀",
+      "platform": "Netflix、MyVideo"
+    },
+    {
+      "title": "黑白清道夫",
+      "cast": "李銘順、婁峻碩",
+      "platform": "Netflix"
+    },
+    {
+      "title": "欠妳的那場婚禮",
+      "cast": "張孝全、蘇慧倫、朱軒洋",
+      "platform": "Netflix、公視＋"
+    },
+    {
+      "title": "人生只租不賣",
+      "cast": "黃河、陳姸霏",
+      "platform": "公視+、Hami Video"
+    },
+    {
+      "title": "男公館",
+      "cast": "張立昂、吳思賢",
+      "platform": "AXN"
+    }
+  ],
+  "職場": [
+    {
+      "title": "何百芮的地獄戀曲",
+      "cast": "郭書瑤、姚淳耀",
+      "platform": "Netflix、MyVideo"
+    }
+  ],
+  "愛情": [
+    {
+      "title": "何百芮的地獄戀曲",
+      "cast": "郭書瑤、姚淳耀",
+      "platform": "Netflix、MyVideo"
+    },
+    {
+      "title": "欠妳的那場婚禮",
+      "cast": "張孝全、蘇慧倫、朱軒洋",
+      "platform": "Netflix、公視＋"
+    },
+    {
+      "title": "動物園",
+      "cast": "邵雨薇、王柏傑",
+      "platform": "Disney+"
+    },
+    {
+      "title": "同棲散策",
+      "cast": "言承旭、林依晨",
+      "platform": "CATCHPLAY+"
+    },
+    {
+      "title": "那些你不知道的我",
+      "cast": "姜典、雷嘉汭",
+      "platform": "LINE TV、MyVideo"
+    },
+    {
+      "title": "我說愛你是真的",
+      "cast": "夏和熙、楊翹碩",
+      "platform": "優酷國際"
+    }
+  ],
+  "懸疑": [
+    {
+      "title": "百萬人推理",
+      "cast": "鄭伊健、婁峻碩",
+      "platform": "Netflix"
+    },
+    {
+      "title": "沉默的審判",
+      "cast": "阮經天、王淨",
+      "platform": "Netflix"
+    },
+    {
+      "title": "聰明鎮",
+      "cast": "梁詠琪、陳姸霏",
+      "platform": "Netflix"
+    },
+    {
+      "title": "凶宅專賣店",
+      "cast": "李銘順、范少勳",
+      "platform": "Disney+"
+    },
+    {
+      "title": "那些你不知道的我",
+      "cast": "姜典、雷嘉汭",
+      "platform": "LINE TV、MyVideo"
+    }
+  ],
+  "推理": [
+    {
+      "title": "百萬人推理",
+      "cast": "鄭伊健、婁峻碩",
+      "platform": "Netflix"
+    }
+  ],
+  "奇幻": [
+    {
+      "title": "乩身",
+      "cast": "柯震東、王柏傑",
+      "platform": "Netflix"
+    },
+    {
+      "title": "他的靈魂與他的書店",
+      "cast": "曾少宗",
+      "platform": "大愛劇場YouTube"
+    }
+  ],
+  "劇情": [
+    {
+      "title": "乩身",
+      "cast": "柯震東、王柏傑",
+      "platform": "Netflix"
+    },
+    {
+      "title": "急診室的奇蹟",
+      "cast": "霍建華、蔡凡熙、楊謹華",
+      "platform": "Netflix"
+    },
+    {
+      "title": "同棲散策",
+      "cast": "言承旭、林依晨",
+      "platform": "CATCHPLAY+"
+    },
+    {
+      "title": "郵票與舒芙蕾",
+      "cast": "張孝全、陳意涵",
+      "platform": "公視+"
+    },
+    {
+      "title": "我說愛你是真的",
+      "cast": "夏和熙、楊翹碩",
+      "platform": "優酷國際"
+    },
+    {
+      "title": "男公館",
+      "cast": "張立昂、吳思賢",
+      "platform": "AXN"
+    },
+    {
+      "title": "永生密碼一九七",
+      "cast": "邱澤、陳意涵",
+      "platform": "八大電視、東森電視"
+    },
+    {
+      "title": "都市開基祖",
+      "cast": "莊凱勛、鍾瑶",
+      "platform": "HAKKA TV"
+    },
+    {
+      "title": "今天愛上我",
+      "cast": "安乙蕎、林暉閔",
+      "platform": "大愛劇場YouTube"
+    }
+  ],
+  "醫療": [
+    {
+      "title": "急診室的奇蹟",
+      "cast": "霍建華、蔡凡熙、楊謹華",
+      "platform": "Netflix"
+    },
+    {
+      "title": "他的靈魂與他的書店",
+      "cast": "曾少宗",
+      "platform": "大愛劇場YouTube"
+    }
+  ],
+  "驚悚": [
+    {
+      "title": "沉默的審判",
+      "cast": "阮經天、王淨",
+      "platform": "Netflix"
+    },
+    {
+      "title": "聰明鎮",
+      "cast": "梁詠琪、陳姸霏",
+      "platform": "Netflix"
+    },
+    {
+      "title": "凶宅專賣店",
+      "cast": "李銘順、范少勳",
+      "platform": "Disney+"
+    }
+  ],
+  "犯罪": [
+    {
+      "title": "沉默的審判",
+      "cast": "阮經天、王淨",
+      "platform": "Netflix"
+    },
+    {
+      "title": "黑白清道夫",
+      "cast": "李銘順、婁峻碩",
+      "platform": "Netflix"
+    },
+    {
+      "title": "郵票與舒芙蕾",
+      "cast": "張孝全、陳意涵",
+      "platform": "公視+"
+    }
+  ],
+  "動作": [
+    {
+      "title": "黑白清道夫",
+      "cast": "李銘順、婁峻碩",
+      "platform": "Netflix"
+    }
+  ],
+  "恐怖": [
+    {
+      "title": "聰明鎮",
+      "cast": "梁詠琪、陳姸霏",
+      "platform": "Netflix"
+    }
+  ],
+  "職人": [
+    {
+      "title": "動物園",
+      "cast": "邵雨薇、王柏傑",
+      "platform": "Disney+"
+    },
+    {
+      "title": "人生只租不賣",
+      "cast": "黃河、陳姸霏",
+      "platform": "公視+、Hami Video"
+    },
+    {
+      "title": "都市開基祖",
+      "cast": "莊凱勛、鍾瑶",
+      "platform": "HAKKA TV"
+    }
+  ],
+  "科幻": [
+    {
+      "title": "永生密碼一九七",
+      "cast": "邱澤、陳意涵",
+      "platform": "八大電視、東森電視"
+    }
+  ],
+  "校園": [
+    {
+      "title": "今天愛上我",
+      "cast": "安乙蕎、林暉閔",
+      "platform": "大愛劇場YouTube"
+    }
+  ],
+  "青春": [
+    {
+      "title": "今天愛上我",
+      "cast": "安乙蕎、林暉閔",
+      "platform": "大愛劇場YouTube"
+    }
+  ]
+}

@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 台灣劇集推薦數據視覺化儀表板</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131a2e;
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --bg-card-hover: rgba(30, 41, 59, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(99, 102, 241, 0.4);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-purple: #a855f7;
+            --accent-indigo: #6366f1;
+            --accent-pink: #ec4899;
+            --accent-cyan: #06b6d4;
+            --gradient-accent: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            --shadow-glow: 0 8px 32px 0 rgba(99, 102, 241, 0.15);
+            --shadow-hover: 0 12px 40px 0 rgba(168, 85, 247, 0.25);
+            --font-outfit: 'Outfit', 'Noto Sans TC', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-outfit);
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-indigo) var(--bg-primary);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-indigo);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Style */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #c084fc, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-live {
+            background-color: rgba(236, 72, 153, 0.2);
+            color: var(--accent-pink);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; box-shadow: 0 0 8px rgba(236, 72, 153, 0.4); }
+            100% { opacity: 0.7; }
+        }
+
+        /* Overview Stat Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-accent);
+            opacity: 0.8;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent-indigo);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--accent-purple);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .stat-card:nth-child(3) .stat-icon {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+        .stat-card:nth-child(4) .stat-icon {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--accent-pink);
+            border-color: rgba(236, 72, 153, 0.2);
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* Charts Section */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.8rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            min-height: 420px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        .chart-title i {
+            color: var(--accent-indigo);
+        }
+
+        .chart-container {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Drama Section Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar Filter Style */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .filter-group {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .filter-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.6rem;
+        }
+
+        .filter-title i {
+            color: var(--accent-purple);
+        }
+
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .filter-badge:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-badge.active {
+            background: var(--gradient-accent);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-badge .badge-count {
+            background: rgba(0, 0, 0, 0.25);
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            padding: 0.05rem 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .filter-badge.active .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Search input */
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(12px);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Drama Cards Container */
+        .dramas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dramas-grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .results-count span {
+            color: var(--accent-indigo);
+            font-weight: 700;
+        }
+
+        /* Drama Card Design */
+        .drama-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.8rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drama-card:hover {
+            transform: scale(1.005) translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-glow);
+            background: var(--bg-card-hover);
+        }
+
+        .drama-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .drama-title-area {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .drama-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .drama-cast {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .drama-cast i {
+            color: var(--accent-purple);
+        }
+
+        .drama-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .genre-badge {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            color: #d8b4fe;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .platform-badge {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: #99f6e4;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .platform-badge i {
+            font-size: 0.7rem;
+        }
+
+        .release-badge {
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.25);
+            color: #fed7aa;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .drama-summary {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Toggle Detail Button */
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-indigo);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            align-self: flex-start;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            color: var(--accent-purple);
+        }
+
+        .toggle-btn i {
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-btn.active i {
+            transform: rotate(180deg);
+        }
+
+        .summary-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .summary-content.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* No Results card */
+        .no-results {
+            background: var(--bg-card);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: rgba(99, 102, 241, 0.4);
+        }
+
+        .no-results h3 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        footer {
+            margin-top: 5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        footer a {
+            color: var(--accent-indigo);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <div class="header-title">
+            <h1>2026 台灣劇集熱門推薦與數據分析儀表板</h1>
+            <p>
+                <span class="badge-live"><i class="fa-solid fa-circle-dot"></i> Live Data Analysis</span>
+                <span>採用 Firecrawl 實時智慧網頁擷取技術分析 & 統計成果</span>
+            </p>
+        </div>
+        <div class="header-action">
+            <span style="font-size: 0.9rem; color: var(--text-secondary);">專案資料夾：<code>drama_analysis/</code></span>
+        </div>
+    </header>
+
+    <!-- Overview Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-film"></i></div>
+            <div class="stat-info">
+                <span class="stat-value" id="stat-total-dramas">20</span>
+                <span class="stat-label">分析劇集總數</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-tags"></i></div>
+            <div class="stat-info">
+                <span class="stat-value" id="stat-total-genres">16</span>
+                <span class="stat-label">類型標籤數量</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-tv"></i></div>
+            <div class="stat-info">
+                <span class="stat-value" id="stat-total-platforms">12</span>
+                <span class="stat-label">主流播放平台</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">劇情 (45%)</span>
+                <span class="stat-label">最熱門類型標籤</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+        <!-- Bar Chart (Genres) -->
+        <div class="chart-box">
+            <div class="chart-header">
+                <h2 class="chart-title"><i class="fa-solid fa-chart-bar"></i> 2026 年劇集類型熱門關鍵字統計排行</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="genreChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Doughnut Chart (Platforms) -->
+        <div class="chart-box">
+            <div class="chart-header">
+                <h2 class="chart-title"><i class="fa-solid fa-chart-pie"></i> 各大串流與電視平台分佈比重</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="platformChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="main-layout">
+        <!-- Sidebar Filter Group -->
+        <div class="sidebar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-bar" class="search-input" placeholder="搜尋劇名、演員或簡介...">
+            </div>
+
+            <!-- Genre Filter -->
+            <div class="filter-group">
+                <h3 class="filter-title"><i class="fa-solid fa-tags"></i> 依劇集類型篩選</h3>
+                <div class="badge-list" id="genre-filters">
+                    <button class="filter-badge active" data-filter="all-genres">全部類型 <span class="badge-count">20</span></button>
+                    <!-- Badges injected by script -->
+                </div>
+            </div>
+
+            <!-- Platform Filter -->
+            <div class="filter-group">
+                <h3 class="filter-title"><i class="fa-solid fa-tv"></i> 依播放平台篩選</h3>
+                <div class="badge-list" id="platform-filters">
+                    <button class="filter-badge active" data-filter="all-platforms">全部平台 <span class="badge-count">20</span></button>
+                    <!-- Badges injected by script -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Drama list container -->
+        <div class="dramas-area">
+            <div class="dramas-grid-header">
+                <div class="results-count">篩選出 <span id="filtered-count">20</span> 部劇集</div>
+                <div class="results-count">排序：依推薦熱度排行</div>
+            </div>
+            
+            <div class="dramas-container" id="dramas-list">
+                <!-- Cards dynamically injected by script -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>2026 © 台灣電視影集數據視覺化儀表板 - 專案由 <a href="#">Firecrawl Web Scraper</a> 技術提供 & AI 引擎自動生成</p>
+    </footer>
+</div>
+
+<script>
+    // Embedded scraped drama data
+    const dramasData = [
+      {
+        "title": "何百芮的地獄戀曲",
+        "cast": "郭書瑤、姚淳耀、鍾瑶、孫可芳",
+        "platform": "Netflix、MyVideo",
+        "genre": "喜劇、職場、愛情",
+        "release_date": "2026",
+        "summary": "《何百芮的地獄戀曲》是《何百芮的地獄毒白》續作，由於前作大獲好評，而且入圍金鐘多項大獎，因此續作相當讓觀眾期待。郭書瑤、姚淳耀、鍾瑶、孫可芳、阿Ken等原班人馬回歸，並把戰場轉移到甜點店，郭書瑤飾演的何百芮仍在單身及脫單之間搖擺不定，姚淳耀飾演的老闆羅人傑與她在工作上交鋒，但關係也不斷升溫。"
+      },
+      {
+        "title": "百萬人推理",
+        "cast": "鄭伊健、婁峻碩、李霈瑜、王柏傑",
+        "platform": "Netflix",
+        "genre": "懸疑、推理",
+        "release_date": "2026",
+        "summary": "《百萬人推理》是香港男神鄭伊健首度主演的台劇，搭檔婁峻碩、李霈瑜、王柏傑、李李仁、陳姸霏等人，讓觀眾相當期待。劇情描述網紅魏言因為違法攜帶槍械並朝警方開槍，遭鄭伊健飾演的資深刑警陳家任反擊中槍，陳家任發現魏言是受人指使，而這是一起針對網紅的連續殺人案，且和一名以預言著稱的網紅巴巴女巫有關。"
+      },
+      {
+        "title": "乩身",
+        "cast": "柯震東、王柏傑、薛仕凌、陳姸霏",
+        "platform": "Netflix",
+        "genre": "奇幻、劇情",
+        "release_date": "2026",
+        "summary": "《乩身》改編自同名暢銷小說，融合傳統信仰與現代奇幻元素。故事描述柯震東飾演的韓杰，因童年時犯下過錯，成為「乩身」替王柏傑飾演的三太子賣命贖罪。辦案過程中，他意外遇上陳姸霏飾演的樂觀女大生葉芝苓，並結識擁有陰陽眼的刑警張泯（楊銘威飾），三人攜手對抗試圖擾亂人魔兩界秩序的反派吳天機（薛仕凌飾）。《乩身》斥資 1.8 億打造，被譽為史上最貴台劇，預計於 2026 年第二季正式上線。"
+      },
+      {
+        "title": "急診室的奇蹟",
+        "cast": "霍建華、蔡凡熙、楊謹華",
+        "platform": "Netflix",
+        "genre": "劇情、醫療",
+        "release_date": "2026",
+        "summary": "《急診室的奇蹟》由霍建華、蔡凡熙、楊謹華等人主演，這也是霍建華久違擔綱台劇男主角，劇情描述霍建華飾演的央大醫院急診醫學部副主任周承俊，做出一個大膽決定，錄取蔡凡熙飾演成績平平的醫學系畢業生林耿明，資質平庸的他與其他菁英同時加入急診室成為住院醫師，並肩搶救生命。在楊謹華飾演的資深主治醫師何宇華帶領下，急診團隊在面對接連不斷的醫療危機、艱難的倫理抉擇，以及院內錯綜複雜的權力角力中，逐漸建立起深厚的情感與信任。"
+      },
+      {
+        "title": "沉默的審判",
+        "cast": "阮經天、王淨、陳以文",
+        "platform": "Netflix",
+        "genre": "驚悚、犯罪、懸疑",
+        "release_date": "2026",
+        "summary": "懸疑復仇影集《沉默的審判》再次集結阮經天、王淨、陳以文等《周處除三害》的卡司，透過一樁暴力犯罪，描繪三個家庭跨世代糾纏的怨恨與道德清算。劇情描述2004年的台北，一宗爆炸綁架案如黑夜裡的流星，瞬間劃破三個毫無關聯的家庭，這根無情的平行線，貫穿二十年的時光，將三個家族、兩代人深埋的恩怨情仇一一翻開。"
+      },
+      {
+        "title": "黑白清道夫",
+        "cast": "李銘順、婁峻碩",
+        "platform": "Netflix",
+        "genre": "犯罪、動作、喜劇",
+        "release_date": "2026",
+        "summary": "《黑白清道夫》由破億國片《96分鐘》導演洪子烜執導，《模仿犯》導演張亨如擔任聯合導演，李銘順與婁峻碩聯合演出，劇情描述李銘順飾演的江福生是一位負債又陷入中年危機的黑道魯蛇，意外捲入一場由神秘「清道夫」組織所引發的暴力衝突之中。「清道夫」成員隱身於民間，以香火鼎盛的百年廟宇「青和宮」為據點，專為黑白兩道、政商權貴解決他們不方便出面處理的棘手麻煩事。"
+      },
+      {
+        "title": "聰明鎮",
+        "cast": "梁詠琪、陳姸霏",
+        "platform": "Netflix",
+        "genre": "懸疑、驚悚、恐怖",
+        "release_date": "2026",
+        "summary": "《聰明鎮》是一部驚悚恐怖題材的戲劇，改編自日本漫畫家伊藤潤二的作品，這是梁詠琪首度演出台灣戲劇，對手戲演員則是金馬新人陳姸霏，兩人對戲相信一定會很有戲劇張力。劇情描述單親母親帶著因大學落榜的女兒，來到一處升學率較高的神秘小鎮「聰明鎮」尋求機會，然而這座小鎮卻擁有著催化慾望的魔力，隨著不明的事件逐漸發生，「聰明」的秘密也隨之浮現。"
+      },
+      {
+        "title": "欠妳的那場婚禮",
+        "cast": "張孝全、蘇慧倫、朱軒洋、謝盈萱、姚淳耀",
+        "platform": "Netflix、公視＋",
+        "genre": "愛情、喜劇",
+        "release_date": "2026",
+        "summary": "《欠妳的那場婚禮》是嚴藝文繼《俗女養成記》、《影后》後的全新力作，首度以男性視角出發，由張孝全、蘇慧倫、朱軒洋、謝盈萱、姚淳耀等實力派演員主演。劇情描述張孝全飾演的周可傑曾是音樂才華風靡樂壇的「馬子狗樂團」主唱，如今成了自我感覺良好、卻再也寫不出歌的落魄中年，更與蘇慧倫飾演的妻子陳立璇關係降至冰點，就在他試圖挽救破碎的婚姻時，一場超現實的奇蹟悄然降臨，帶領他重新找回愛的初衷。"
+      },
+      {
+        "title": "凶宅專賣店",
+        "cast": "李銘順、范少勳、陳姸霏",
+        "platform": "Disney+",
+        "genre": "懸疑、驚悚",
+        "release_date": "2026",
+        "summary": "《凶宅專賣店》由李銘順、范少勳、陳姸霏等人主演，導演提到創作靈感部分來自韓國電影《與神同行》，認為台灣也具備發展自身生死題材敘事的文化基礎。劇情描述為了籌措妹妹欣愛高昂的醫藥費，范少勳飾演的阿澤決定出售自己居住多年的凶宅，卻因緣際會誤打誤撞，成了專門買賣凶宅的「義勝房屋」菜鳥房仲，這間凶宅專賣店裡，聚集了一群性格鮮明的夥伴。"
+      },
+      {
+        "title": "動物園",
+        "cast": "邵雨薇、王柏傑",
+        "platform": "Disney+",
+        "genre": "愛情、職人",
+        "release_date": "2026",
+        "summary": "《動物園》由邵雨薇、王柏傑主演，是兩人繼《比悲傷更悲傷的故事 影集版》後再度合作，以動物保育員為主題，相當新鮮。劇情描述邵雨薇飾演廣告公司群創意總監朱欣葵，在職涯遭遇重大挫折後，陰錯陽差成為高雄壽山動物園的實習保育員。面對截然不同的工作環境，她不僅要學習如何與動物相處，還得應對王柏傑飾演的資深保育員嚴格要求與挑戰，兩人從初見的針鋒相對，逐漸理解彼此的堅持與溫柔。"
+      },
+      {
+        "title": "同棲散策",
+        "cast": "言承旭、林依晨",
+        "platform": "CATCHPLAY+",
+        "genre": "劇情、愛情",
+        "release_date": "2026",
+        "summary": "言承旭久違回歸台劇，與女神林依晨合作《同棲散策》，兩人曾在2012年於五月天諾亞方舟高雄世運演唱會上合作串場影片，現在終於合拍電視劇。《同棲散策》劇情描述對高知識份子夫妻令人疲倦的婚姻生活，雙方都對激盪不起漣漪的性生活感到乏味，一連串的問題迫使兩人想做出改變，而在海報中，言承旭表情悲傷、背後環抱仰天痛哭的林依晨，看起來相當有戲劇張力。"
+      },
+      {
+        "title": "郵票與舒芙蕾",
+        "cast": "張孝全、陳意涵",
+        "platform": "公視+",
+        "genre": "劇情、犯罪",
+        "release_date": "2026",
+        "summary": "《郵票與舒芙蕾》由張孝全與陳意涵主演，此劇為青少年毒品犯罪刑偵影集，故事講述不同社會階層、年齡，因成癮所產生的故事及社會問題，劇中張孝全的角色是個警察，與陳意涵飾演的家庭主婦有曖昧之情，這種與上癮無異的執念，使他們陷落各自的深淵，戒不掉對彼此的依賴，從此難以自拔。"
+      },
+      {
+        "title": "人生只租不賣",
+        "cast": "黃河、陳姸霏、林予晞、王真琳、謝章穎",
+        "platform": "公視+、Hami Video",
+        "genre": "喜劇、職人",
+        "release_date": "2026",
+        "summary": "台語劇《人生只租不賣》由黃河、陳姸霏、林予晞等人主演，以輕喜劇形式演繹租賃管理師與房客、房東之間荒誕搞笑又溫暖的故事。過去總演出社會邊緣人的黃河被稱為「驚悚影帝」，這次詮釋生活中很常見毫無靈魂的上班機器，陳姸霏則飾演超級躺平族，她認為這個角色非常古靈精怪、調皮搗蛋，有很多可以發揮的地方。"
+      },
+      {
+        "title": "那些你不知道的我",
+        "cast": "姜典、雷嘉汭",
+        "platform": "LINE TV、MyVideo",
+        "genre": "懸疑、愛情",
+        "release_date": "2026",
+        "summary": "《那些你不知道的我》是一部青春懸疑愛情劇，由姜典、雷嘉汭主演，從一位當紅偶像被威脅的離奇案件開展，描繪現代人因應社群及輿論需求產生的多面性格，對於未知的另一半，究竟要完全掌控還是選擇信任？對於突如其來的傷痛，應該如何重新振作？以一支等待被解鎖的破碎手機以及證據清單做為案件開展，暗示每個人都有被藏起來的部分自我。"
+      },
+      {
+        "title": "我說愛你是真的",
+        "cast": "夏和熙、楊翹碩",
+        "platform": "優酷國際",
+        "genre": "劇情、愛情",
+        "release_date": "2026",
+        "summary": "BL劇《我說愛你是真的》由夏和熙、楊翹碩主演，延續《黑白原來是真的》故事線，聚焦於「從失去中重生」與「再次勇敢相信愛」的成年人戀愛。劇情描述夏和熙飾演的陳效安在摯愛離世後陷入悲傷，意外與楊翹碩飾演的少年舊識丁遇廷重逢，兩人透過層層試探與陪伴，重新面對愛情與告別。"
+      },
+      {
+        "title": "男公館",
+        "cast": "張立昂、吳思賢、羅宏正、陳奕",
+        "platform": "AXN",
+        "genre": "劇情、喜劇",
+        "release_date": "2026",
+        "summary": "《男公館》由陳奕擔任製作人，攜手吳思賢、張立昂、羅宏正等人合作，故事以人性與慾望為主軸，從一個鑽石貪念而展開的追殺行動，結果男主角群誤闖男公館卻華麗轉身成為紅牌男公關的黑色喜劇。每個男公關都有各自的屬性，實景搭建更是高規格呈現多個LED華麗舞台，令人相當期待。"
+      },
+      {
+        "title": "永生密碼一九七",
+        "cast": "邱澤、陳意涵、張軒睿",
+        "platform": "八大電視、東森電視",
+        "genre": "劇情、科幻",
+        "release_date": "2026",
+        "summary": "《永生密碼一九七》是邱澤成為人夫後首部作品，也是與陳意涵再次合作。描述一艘休眠艙從海面浮出開始，邱澤飾演神秘的50年代男子從艙內甦醒，他來自68年前的社會，因一原因穿越時空來到現代，為解開神秘的「永生人」陰謀，他必須與親孫張軒睿攜手合作，並和神秘女子抽絲剝繭、解開謎團。"
+      },
+      {
+        "title": "都市開基祖",
+        "cast": "莊凱勛、鍾瑶",
+        "platform": "HAKKA TV",
+        "genre": "劇情、職人",
+        "release_date": "2026",
+        "summary": "改編自林生祥的專輯《臨暗》，以及1996年捷運工人集體工傷罹患「潛水夫病」事件。捷運是進步都市的象徵，而工人是建構城市的開基祖。劇情講述工人在地下30米深處的艱苦工作，深刻描繪工人罹患「潛水夫症」的血淚史，融合社會寫實、勞工權益與家庭情感，呈現城市推動者的真實人生。"
+      },
+      {
+        "title": "他的靈魂與他的書店",
+        "cast": "曾少宗",
+        "platform": "大愛劇場YouTube",
+        "genre": "奇幻、醫療",
+        "release_date": "2026",
+        "summary": "醫療劇《他的靈魂與他的書店》由曾少宗主演，改編自真人真事，曾少宗在劇中飾演有理想的血液腫瘤科醫師李啟誠，故事聚焦於李醫師照顧八位血癌病友的感人經歷，透過詩意手法探討醫病關係、潛意識層次以及生命跨越生死的溫暖傳承，將「書店」意象與病患的靈魂記憶連結。"
+      },
+      {
+        "title": "今天愛上我",
+        "cast": "安乙蕎、林暉閔",
+        "platform": "大愛劇場YouTube",
+        "genre": "劇情、校園、青春",
+        "release_date": "2026",
+        "summary": "青春校園劇《今天愛上我》由安乙蕎、林暉閔主演，以慈濟大專青年聯誼會為背景，講述Y世代大學生在校園中的世代衝突、心靈掙扎、人際關係與自我成長。劇情聚焦於主角賴郁文從起初質疑社團，到與志工從爭執轉為理解的轉化歷程，展現現代年輕人在自我迷惘中，如何透過愛與付出實現良善精神的傳承。"
+      }
+    ];
+
+    // State Variables
+    let activeGenreFilter = 'all-genres';
+    let activePlatformFilter = 'all-platforms';
+    let searchQuery = '';
+
+    // Initialize Page
+    document.addEventListener("DOMContentLoaded", () => {
+        setupFilters();
+        renderDramas();
+        renderCharts();
+        
+        // Search bar listener
+        document.getElementById('search-bar').addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            renderDramas();
+        });
+    });
+
+    // Helper to calculate statistics
+    function getStats() {
+        const genresCount = {};
+        const platformsCount = {};
+        let uniqueGenres = new Set();
+        let uniquePlatforms = new Set();
+
+        dramasData.forEach(d => {
+            // Process genres
+            const gs = d.genre.split('、');
+            gs.forEach(g => {
+                g = g.trim();
+                genresCount[g] = (genresCount[g] || 0) + 1;
+                uniqueGenres.add(g);
+            });
+
+            // Process platforms
+            const ps = d.platform.split('、');
+            ps.forEach(p => {
+                p = p.trim();
+                platformsCount[p] = (platformsCount[p] || 0) + 1;
+                uniquePlatforms.add(p);
+            });
+        });
+
+        return {
+            genresCount,
+            platformsCount,
+            totalGenres: uniqueGenres.size,
+            totalPlatforms: uniquePlatforms.size
+        };
+    }
+
+    // Set up Filters on Sidebar
+    function setupFilters() {
+        const stats = getStats();
+        
+        // Genre filter setup
+        const genreFiltersContainer = document.getElementById('genre-filters');
+        const sortedGenres = Object.entries(stats.genresCount).sort((a,b) => b[1] - a[1]);
+        
+        sortedGenres.forEach(([genre, count]) => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-badge';
+            btn.setAttribute('data-filter', genre);
+            btn.innerHTML = `${genre} <span class="badge-count">${count}</span>`;
+            btn.addEventListener('click', () => handleFilterClick('genre', genre, btn));
+            genreFiltersContainer.appendChild(btn);
+        });
+
+        // Platform filter setup
+        const platformFiltersContainer = document.getElementById('platform-filters');
+        const sortedPlatforms = Object.entries(stats.platformsCount).sort((a,b) => b[1] - a[1]);
+        
+        sortedPlatforms.forEach(([platform, count]) => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-badge';
+            btn.setAttribute('data-filter', platform);
+            btn.innerHTML = `${platform} <span class="badge-count">${count}</span>`;
+            btn.addEventListener('click', () => handleFilterClick('platform', platform, btn));
+            platformFiltersContainer.appendChild(btn);
+        });
+
+        // Add click listener to the 'All' buttons
+        document.querySelector('[data-filter="all-genres"]').addEventListener('click', (e) => {
+            handleFilterClick('genre', 'all-genres', e.currentTarget);
+        });
+        document.querySelector('[data-filter="all-platforms"]').addEventListener('click', (e) => {
+            handleFilterClick('platform', 'all-platforms', e.currentTarget);
+        });
+    }
+
+    // Handle Filter Clicks
+    function handleFilterClick(type, val, btnElement) {
+        if (type === 'genre') {
+            activeGenreFilter = val;
+            document.querySelectorAll('#genre-filters .filter-badge').forEach(b => b.classList.remove('active'));
+        } else {
+            activePlatformFilter = val;
+            document.querySelectorAll('#platform-filters .filter-badge').forEach(b => b.classList.remove('active'));
+        }
+        btnElement.classList.add('active');
+        renderDramas();
+    }
+
+    // Filter and Render Drama Cards
+    function renderDramas() {
+        const listContainer = document.getElementById('dramas-list');
+        listContainer.innerHTML = '';
+
+        const filtered = dramasData.filter(d => {
+            // Genre matching
+            const matchesGenre = activeGenreFilter === 'all-genres' || d.genre.split('、').map(g=>g.trim()).includes(activeGenreFilter);
+            // Platform matching
+            const matchesPlatform = activePlatformFilter === 'all-platforms' || d.platform.split('、').map(p=>p.trim()).includes(activePlatformFilter);
+            // Search text matching
+            const matchesSearch = !searchQuery || 
+                d.title.toLowerCase().includes(searchQuery) ||
+                d.cast.toLowerCase().includes(searchQuery) ||
+                d.summary.toLowerCase().includes(searchQuery) ||
+                d.genre.toLowerCase().includes(searchQuery) ||
+                d.platform.toLowerCase().includes(searchQuery);
+
+            return matchesGenre && matchesPlatform && matchesSearch;
+        });
+
+        document.getElementById('filtered-count').innerText = filtered.length;
+
+        if (filtered.length === 0) {
+            listContainer.innerHTML = `
+                <div class="no-results">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <h3>未找到符合篩選條件的劇集</h3>
+                    <p>試著清除關鍵字搜尋或重置類型、平台篩選條件。</p>
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'drama-card';
+            
+            // Format Genres & Platforms into HTML Badges
+            const genresHTML = d.genre.split('、').map(g => `<span class="genre-badge">${g.trim()}</span>`).join('');
+            const platformsHTML = d.platform.split('、').map(p => {
+                let iconClass = 'fa-circle-play';
+                if (p.includes('Netflix')) iconClass = 'fa-circle-chevron-right';
+                if (p.includes('Disney')) iconClass = 'fa-circle-stop';
+                return `<span class="platform-badge"><i class="fa-solid ${iconClass}"></i> ${p.trim()}</span>`;
+            }).join('');
+
+            card.innerHTML = `
+                <div class="drama-header">
+                    <div class="drama-title-area">
+                        <h2 class="drama-title">
+                            ${d.title}
+                            <span class="release-badge">${d.release_date} 年</span>
+                        </h2>
+                        <div class="drama-cast">
+                            <i class="fa-solid fa-users"></i> 主演卡司：${d.cast}
+                        </div>
+                    </div>
+                    <div class="drama-badges">
+                        ${genresHTML}
+                        ${platformsHTML}
+                    </div>
+                </div>
+                <div class="drama-summary">
+                    <button class="toggle-btn" onclick="toggleSummary(this)">
+                        <i class="fa-solid fa-chevron-down"></i> 展開劇集詳細簡介與故事大綱
+                    </button>
+                    <div class="summary-content" style="margin-top: 1rem; border-left: 2px solid var(--accent-indigo); padding-left: 1rem; color: var(--text-primary);">
+                        ${d.summary}
+                    </div>
+                </div>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    // Toggle Summary Action
+    window.toggleSummary = function(btn) {
+        const content = btn.nextElementSibling;
+        btn.classList.toggle('active');
+        content.classList.toggle('show');
+        
+        if (content.classList.contains('show')) {
+            btn.innerHTML = `<i class="fa-solid fa-chevron-down"></i> 收合劇集詳細簡介`;
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-chevron-down"></i> 展開劇集詳細簡介與故事大綱`;
+        }
+    };
+
+    // Render Chart.js Visualizations
+    function renderCharts() {
+        const stats = getStats();
+        
+        // Chart.js global defaults for beautiful dark style
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Outfit', 'Noto Sans TC', sans-serif";
+
+        // 1. Genre Bar Chart
+        const sortedGenres = Object.entries(stats.genresCount).sort((a,b) => b[1] - a[1]);
+        const genreLabels = sortedGenres.map(x => x[0]);
+        const genreData = sortedGenres.map(x => x[1]);
+
+        const ctxGenre = document.getElementById('genreChart').getContext('2d');
+        
+        // Create Gradient Accent
+        const gradientGenre = ctxGenre.createLinearGradient(0, 0, 400, 0);
+        gradientGenre.addColorStop(0, '#6366f1');
+        gradientGenre.addColorStop(1, '#a855f7');
+
+        new Chart(ctxGenre, {
+            type: 'bar',
+            data: {
+                labels: genreLabels,
+                datasets: [{
+                    label: '劇集數量',
+                    data: genreData,
+                    backgroundColor: gradientGenre,
+                    borderColor: 'rgba(255,255,255,0.05)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    barPercentage: 0.65
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // horizontal bar chart
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderWidth: 1,
+                        borderColor: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { stepSize: 1 }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 2. Platform Doughnut Chart
+        const sortedPlatforms = Object.entries(stats.platformsCount).sort((a,b) => b[1] - a[1]);
+        const platformLabels = sortedPlatforms.map(x => x[0]);
+        const platformData = sortedPlatforms.map(x => x[1]);
+
+        const ctxPlatform = document.getElementById('platformChart').getContext('2d');
+        new Chart(ctxPlatform, {
+            type: 'doughnut',
+            data: {
+                labels: platformLabels,
+                datasets: [{
+                    data: platformData,
+                    backgroundColor: [
+                        '#6366f1', // Indigo
+                        '#a855f7', // Purple
+                        '#06b6d4', // Cyan
+                        '#ec4899', // Pink
+                        '#f59e0b', // Amber
+                        '#10b981', // Emerald
+                        '#3b82f6', // Blue
+                        '#ef4444', // Red
+                        '#84cc16', // Lime
+                        '#6b7280'  // Gray
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#131a2e'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderWidth: 1,
+                        borderColor: 'rgba(255,255,255,0.1)'
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+</script>
+</body>
+</html>
