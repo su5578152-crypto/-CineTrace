@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "posts": {
+      "type": "array",
+      "description": "List of posts/comments on the Dcard entertainer page.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "content_snippet": { "type": "string" },
+          "author": { "type": "string" },
+          "likes": { "type": "integer" },
+          "comments_count": { "type": "integer" }
+        },
+        "required": ["title", "content_snippet"]
+      }
+    }
+  },
+  "required": ["posts"]
+}

@@ -46,7 +46,12 @@
             <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋導演、攝影師、演員或作品標題..." 
                 class="w-full bg-slate-900/80 border border-slate-700/50 rounded-2xl py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all">
         </div>
-        <button id="loginBtn" class="bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black hover:bg-indigo-500 transition-all">社群登入</button>
+        <div class="flex items-center gap-4">
+            <a href="dcard-analysis.html" class="hidden md:flex items-center gap-2 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-4 py-2 rounded-full text-xs font-bold hover:bg-indigo-500/20 transition-all">
+                <i class="fas fa-chart-line"></i> Dcard 趨勢分析
+            </a>
+            <button id="loginBtn" class="bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black hover:bg-indigo-500 transition-all">社群登入</button>
+        </div>
     </nav>
 
     <header class="pt-40 pb-16 px-8 hero-gradient text-center">

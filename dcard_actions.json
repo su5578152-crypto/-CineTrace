@@ -1,0 +1,7 @@
+[
+  { "type": "wait", "milliseconds": 2000 },
+  { "type": "scroll", "direction": "down", "amount": 1000 },
+  { "type": "wait", "milliseconds": 2000 },
+  { "type": "scroll", "direction": "down", "amount": 1000 },
+  { "type": "wait", "milliseconds": 2000 }
+]

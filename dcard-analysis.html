@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dcard 追星板趨勢分析 | CineTrace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --accent: #6366f1; --bg-dark: #020617; --card-bg: rgba(15, 23, 42, 0.6); }
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; background-color: var(--bg-dark); color: #f1f5f9; scroll-behavior: smooth; }
+        .glass { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .hero-gradient { background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%); }
+        .animate-fade { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen pb-20 hero-gradient">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[1000] glass px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+                <i class="fas fa-arrow-left text-white text-xl"></i>
+            </div>
+            <span class="text-2xl font-black tracking-tighter">CineTrace<span class="text-indigo-500">.</span></span>
+        </a>
+        <div class="hidden md:block text-slate-400 font-bold tracking-widest text-sm">DCARD 追星板趨勢分析報告</div>
+        <div class="w-10"></div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-32 pb-10 px-8 text-center max-w-4xl mx-auto animate-fade">
+        <div class="inline-block bg-indigo-600/20 text-indigo-400 px-4 py-1.5 rounded-full text-xs font-bold border border-indigo-500/30 mb-6">
+            <i class="fas fa-robot mr-2"></i>Firecrawl AI 數據洞察
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">社群聲量與<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">情感分析</span></h1>
+        <p class="text-slate-400 text-base md:text-lg font-light leading-relaxed">
+            我們透過 AI 自動抓取 Dcard 追星板最新 30 則熱門討論，透過自然語言處理技術進行關鍵字萃取與情緒判定，助您掌握最新的娛樂圈風向。
+        </p>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade" style="animation-delay: 0.2s;">
+        
+        <!-- Word Cloud Section -->
+        <div class="glass p-8 rounded-[2rem] border border-white/5 shadow-2xl flex flex-col">
+            <h2 class="text-2xl font-black mb-2"><i class="fas fa-cloud text-indigo-500 mr-2"></i>熱門關鍵字文字雲</h2>
+            <p class="text-slate-400 text-sm mb-8">透過 jieba 斷詞分析網友討論度最高的詞彙，字體越大代表出現頻率越高。</p>
+            <div class="flex-1 flex items-center justify-center bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+                <img src="assets/wordcloud.png" alt="Dcard 追星板文字雲" class="w-full h-auto rounded-xl shadow-lg mix-blend-screen" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x400/020617/6366f1?text=Generating+Word+Cloud...';">
+            </div>
+        </div>
+
+        <!-- Sentiment Analysis Section -->
+        <div class="glass p-8 rounded-[2rem] border border-white/5 shadow-2xl flex flex-col">
+            <h2 class="text-2xl font-black mb-2"><i class="fas fa-chart-pie text-pink-500 mr-2"></i>輿情情感分析</h2>
+            <p class="text-slate-400 text-sm mb-8">運用 SnowNLP 模型計算每篇貼文的情緒極性，分析近期追星板的整體氛圍。</p>
+            <div class="flex-1 flex flex-col items-center justify-center relative">
+                <div class="w-full max-w-[300px] aspect-square relative">
+                    <canvas id="sentimentChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-4xl font-black" id="totalPosts">30</span>
+                        <span class="text-xs text-slate-400 tracking-widest mt-1">總篇數</span>
+                    </div>
+                </div>
+                <div class="flex justify-center gap-6 mt-8 w-full" id="statsLegend">
+                    <!-- Legend will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Posts Table Section -->
+        <div class="lg:col-span-2 glass p-8 rounded-[2rem] border border-white/5 shadow-2xl mt-4 animate-fade" style="animation-delay: 0.4s;">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-2xl font-black mb-2"><i class="fas fa-list text-purple-500 mr-2"></i>話題情緒排行榜</h2>
+                    <p class="text-slate-400 text-sm">依據情感分數 (0~1) 由高至低排序，找出最具正向與負向情緒的討論。</p>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/10 text-slate-400 text-sm">
+                            <th class="pb-4 font-bold w-16">情緒</th>
+                            <th class="pb-4 font-bold">標題與摘要</th>
+                            <th class="pb-4 font-bold hidden md:table-cell">發文者</th>
+                            <th class="pb-4 font-bold w-24 text-right">分數</th>
+                        </tr>
+                    </thead>
+                    <tbody id="postsTableBody">
+                        <!-- Posts will be injected here -->
+                        <tr><td colspan="4" class="py-8 text-center text-slate-500"><i class="fas fa-spinner fa-spin mr-2"></i>載入資料中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Load data from JSON
+        async function loadAnalysisData() {
+            try {
+                const response = await fetch('dcard_sentiment.json');
+                const data = await response.json();
+                renderChart(data.stats);
+                renderTable(data.posts);
+            } catch (error) {
+                console.error("無法載入 JSON 資料", error);
+                document.getElementById('postsTableBody').innerHTML = '<tr><td colspan="4" class="py-8 text-center text-red-400">資料載入失敗，請確認 dcard_sentiment.json 存在。如果是直接開啟本地檔案(file://)，可能會因 CORS 阻擋而無法載入。</td></tr>';
+            }
+        }
+
+        function renderChart(stats) {
+            document.getElementById('totalPosts').innerText = stats.total;
+            
+            const ctx = document.getElementById('sentimentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['正向', '中立', '負向'],
+                    datasets: [{
+                        data: [stats.positive, stats.neutral, stats.negative],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)', // Green
+                            'rgba(148, 163, 184, 0.8)', // Gray
+                            'rgba(244, 63, 94, 0.8)'    // Red
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(148, 163, 184, 1)',
+                            'rgba(244, 63, 94, 1)'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { family: 'Noto Sans TC' },
+                            bodyFont: { family: 'Noto Sans TC' },
+                            padding: 12,
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+
+            // Render Legend
+            document.getElementById('statsLegend').innerHTML = `
+                <div class="text-center"><div class="text-2xl font-black text-emerald-400">${stats.positive}</div><div class="text-xs text-slate-500 mt-1"><i class="fas fa-circle text-[8px] text-emerald-400 mr-1.5 transform -translate-y-px"></i>正向</div></div>
+                <div class="text-center"><div class="text-2xl font-black text-slate-400">${stats.neutral}</div><div class="text-xs text-slate-500 mt-1"><i class="fas fa-circle text-[8px] text-slate-400 mr-1.5 transform -translate-y-px"></i>中立</div></div>
+                <div class="text-center"><div class="text-2xl font-black text-rose-400">${stats.negative}</div><div class="text-xs text-slate-500 mt-1"><i class="fas fa-circle text-[8px] text-rose-400 mr-1.5 transform -translate-y-px"></i>負向</div></div>
+            `;
+        }
+
+        function renderTable(posts) {
+            const tbody = document.getElementById('postsTableBody');
+            tbody.innerHTML = '';
+            
+            posts.forEach(post => {
+                let badgeClass = '';
+                let iconClass = '';
+                let labelText = '';
+                
+                if (post.label === 'Positive') {
+                    badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                    iconClass = 'fa-smile';
+                    labelText = '正向';
+                } else if (post.label === 'Negative') {
+                    badgeClass = 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+                    iconClass = 'fa-frown';
+                    labelText = '負向';
+                } else {
+                    badgeClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+                    iconClass = 'fa-meh';
+                    labelText = '中立';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-white/5 hover:bg-white/[0.02] transition-colors';
+                tr.innerHTML = `
+                    <td class="py-5 pr-4 align-top">
+                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-full border ${badgeClass}">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                    </td>
+                    <td class="py-5 pr-4">
+                        <h4 class="font-bold text-base text-white mb-1">${post.title}</h4>
+                        <p class="text-sm text-slate-400 line-clamp-2">${post.snippet}</p>
+                    </td>
+                    <td class="py-5 pr-4 hidden md:table-cell align-top">
+                        <span class="text-xs text-slate-500 font-bold bg-slate-800/50 px-2 py-1 rounded-md">${post.author}</span>
+                        <div class="text-[10px] text-slate-600 mt-2"><i class="far fa-clock mr-1"></i>${post.time}</div>
+                    </td>
+                    <td class="py-5 align-top text-right">
+                        <span class="font-mono font-bold ${post.label === 'Positive' ? 'text-emerald-400' : post.label === 'Negative' ? 'text-rose-400' : 'text-slate-400'}">${post.sentiment_score.toFixed(3)}</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadAnalysisData);
+    </script>
+</body>
+</html>
